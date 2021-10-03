@@ -28,7 +28,7 @@ public class HelloController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/say", method = RequestMethod.GET)
+    @RequestMapping(value = "/v2/say", method = RequestMethod.GET)
     public String sayV2(@RequestParam String name) {
         logger.debug("say method debug");
         return "hello " + name;
