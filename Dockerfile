@@ -12,4 +12,6 @@ RUN mvn clean package --settings maven-settings.xml
 FROM mytomcat
 WORKDIR /usr/local/tomcat/
 COPY --from=builder /opt/tomcat/webapps/target/*.war webapps/
+# rename war
+RUN mv /usr/local/tomcat/webapps/*war /usr/local/tomcat/webapps/web.war
 CMD ["catalina.sh", "run"]
