@@ -26,4 +26,11 @@ public class HelloController {
         logger.debug("say method debug");
         return "hello controller";
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/say", method = RequestMethod.GET)
+    public String sayV2(@RequestParam String name) {
+        logger.debug("say method debug");
+        return "hello " + name;
+    }
 }
