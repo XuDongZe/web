@@ -6,3 +6,9 @@ ADD ./pom.xml pom.xml
 ADD ./maven-settings.xml maven-settings.xml
 # package jar
 RUN mvn clean package --settings maven-settings.xml
+
+# Second stage: applaction containerd
+FROM mytomcat
+WORKDIR .
+ADD target/*.war /usr/local/tomcat/webapps/
+CMD ["catalina.sh", "run"]
