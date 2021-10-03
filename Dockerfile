@@ -9,7 +9,7 @@ ADD ./maven-settings.xml maven-settings.xml
 RUN mvn clean package --settings maven-settings.xml
 
 # Second stage: applaction containerd
-FROM mytomcat
+FROM tomcat:8.5.49-jdk8-openjdk
 WORKDIR /usr/local/tomcat/
 COPY --from=builder /opt/tomcat/webapps/target/*.war webapps/
 # rename war
