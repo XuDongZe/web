@@ -14,4 +14,6 @@ WORKDIR /usr/local/tomcat/
 COPY --from=builder /opt/tomcat/webapps/target/*.war webapps/
 # rename war
 RUN mv /usr/local/tomcat/webapps/*war /usr/local/tomcat/webapps/web.war
+# change tomcat port: 8010
+RUN sed -i 's|"8080"|"8010"|' server.xml
 CMD ["catalina.sh", "run"]
