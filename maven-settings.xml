@@ -9,9 +9,9 @@
 
     <mirrors>
         <mirror>
-            <id>simplegaming</id>
-            <name>simplegaming</name>
-            <url>http://152.136.159.92:8081/repository/simplegaming/</url>
+            <id>maven-public</id>
+            <name>public</name>
+            <url>http://152.136.159.92:8081/repository/maven-public/</url>
             <mirrorOf>*</mirrorOf>
         </mirror>
     </mirrors>
