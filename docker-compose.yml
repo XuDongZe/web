@@ -1,0 +1,104 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /var/lib/docker/volumes/nginx/conf.d:/etc/nginx/conf.d:ro
+      - /var/lib/docker/volumes/nginx/html:/usr/share/nginx/html:ro
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    depends_on:
+      - web
+
+  web:
+    build: .
+    image: xudongze/tomcat-springmvc-web:latest
+    container_name: web
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/tomcat/webapps/:/usr/local/tomcat/webapps/
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    depends_on:
+      - mysql
+      - mongo
+      - redis
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/mysql/conf:/etc/mysql/conf.d
+      - /var/lib/docker/volumes/mysql/logs:/var/log/mysql
+      - /var/lib/docker/volumes/mysql/data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=admin
+      - MYSQL_PASSWORD=1234QWER!
+      - TZ=Asia/Shanghai
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    restart: always
+
+  mongo:
+    image: mongo:5.0.3
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/mongo/db:/data/db
+      - /var/lib/docker/volumes/mongo/log:/var/log/mongodb
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=1234QWER!
+      - TZ=Asia/Shanghai
+    restart: always
+
+  redis:
+    image: redis:6.2.5
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/redis/redis.conf:/etc/redis/redis.conf
+      - /var/lib/docker/volumes/redis/data:/data
+    command: redis-server /etc/redis/redis.conf
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+
+  rabbitMQ:
+    image: rabbitmq:management
+    container_name: rabbitMQ
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/rabbitMQ/data:/var/lib/rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=1234QWER!
+      - TZ=Asia/Shanghai
+    restart: always
+
+networks:
+  server-web:
