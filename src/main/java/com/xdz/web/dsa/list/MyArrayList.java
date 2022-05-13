@@ -14,7 +14,7 @@ import java.util.Iterator;
  * Date: 2022/5/9 20:43<br/>
  * Version: 1.0<br/>
  */
-public class MyArrayList<T> implements Iterable<T> {
+public class MyArrayList<T> implements IMyList<T> {
     private Object[] array;
     private int capacity;
     private int size;
@@ -26,20 +26,50 @@ public class MyArrayList<T> implements Iterable<T> {
     }
 
     @SuppressWarnings("unchecked")
+    @Override
     public T get(int idx) {
         return (T) array[idx];
     }
 
+    @Override
     public void set(int idx, T value) {
         array[idx] = value;
     }
 
+    @Override
     public int size() {
         return size;
     }
 
+    @Override
     public boolean isEmpty() {
         return size() == 0;
+    }
+
+    @Override
+    public void add(int index, T value) {
+        ensureCapacity(size + 1);
+        for (int i = size - 1; i >= index; i --) {
+            array[i + 1] = array[i];
+        }
+        array[index] = value;
+        size ++;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public T remove(int index) {
+        T e = (T) array[index];
+        for (int i = index + 1; i < size; i ++) {
+            array[i - 1] = array[i];
+        }
+        size --;
+        return e;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new MyArrayListIterator(this);
     }
 
     private void ensureCapacity(int newCapacity) {
@@ -52,27 +82,6 @@ public class MyArrayList<T> implements Iterable<T> {
             newArray[i] = array[i];
         }
         array = newArray;
-    }
-
-    public void add(int index, T value) {
-        ensureCapacity(size + 1);
-        for (int i = size - 1; i >= index; i --) {
-            array[i + 1] = array[i];
-        }
-        array[index] = value;
-        size ++;
-    }
-
-    public void remove(int index) {
-        for (int i = index + 1; i < size; i ++) {
-            array[i - 1] = array[i];
-        }
-        size --;
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        return new MyArrayListIterator(this);
     }
 
     private class MyArrayListIterator implements Iterator<T> {
