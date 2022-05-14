@@ -1,5 +1,7 @@
 package com.xdz.web.dsa.list;
 
+import org.checkerframework.checker.index.qual.NonNegative;
+
 import java.util.Iterator;
 
 /**
@@ -238,6 +240,20 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         }
     }
 
+    public void exchange(int i, int j) {
+        exchange(getNode(i), getNode(j));
+    }
+
+    private void exchange(Node<E> p, Node<E> q) {
+        // p != head && q != head && p != q
+        Node<E> pp = prev(p), pq = prev(q);
+        pp.next = q;
+        pq.next = p;
+        Node<E> tmp = p.next;
+        p.next = q.next;
+        q.next = tmp;
+    }
+
     public static void main(String[] args) {
         MySingleLinkedList<Integer> list = new MySingleLinkedList<>();
         // add(idx)
@@ -247,6 +263,7 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         list.add(0, 1);
         list.add(0, 2);
         list.add(0, 3);
+        list.exchange(list.getNode(0), list.getNode(1));
         Integer integer = list.get(0);
         integer = list.get(1);
         integer = list.get(2);

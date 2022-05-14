@@ -187,6 +187,37 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         }
     }
 
+    public void exchange(int i, int j) {
+        exchange(getNode(i), getNode(j));
+    }
+
+    private void exchange(Node<E> p, Node<E> q) {
+        Node<E> pp = prev(p);
+        Node<E> pq = prev(q);
+        Node<E> np = next(p);
+        Node<E> nq = next(q);
+        pp.next = q;
+        q.prev = pp;
+        pq.next = p;
+        p.prev = pq;
+
+        np.prev = q;
+        q.next = np;
+        nq.prev = p;
+        p.next = nq;
+    }
+
+    public boolean contains(E e) {
+        Node<E> p = head.next;
+        while (p != tail) {
+            if ((e == null && p.element == null) || e.equals(p.element)) {
+                return true;
+            }
+            p = p.next;
+        }
+        return false;
+    }
+
     public static void main(String[] args){
         MyDoubleLinkedList<Integer> list = new MyDoubleLinkedList<>();
         // add(idx)
@@ -196,6 +227,9 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         list.add(0, 1);
         list.add(0, 2);
         list.add(0, 3);
+        list.exchange(list.getNode(0), list.getNode(2));
+        boolean contains = list.contains(1);
+        contains = list.contains(-1);
         Integer integer = list.get(0);
         integer = list.get(1);
         integer = list.get(2);
