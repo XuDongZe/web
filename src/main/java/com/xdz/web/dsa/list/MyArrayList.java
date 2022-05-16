@@ -49,21 +49,22 @@ public class MyArrayList<T> implements IMyList<T> {
     @Override
     public void add(int index, T value) {
         ensureCapacity(size + 1);
-        for (int i = size - 1; i >= index; i --) {
+        for (int i = size - 1; i >= index; i--) {
             array[i + 1] = array[i];
         }
         array[index] = value;
-        size ++;
+        size++;
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public T remove(int index) {
         T e = (T) array[index];
-        for (int i = index + 1; i < size; i ++) {
+        for (int i = index + 1; i < size; i++) {
             array[i - 1] = array[i];
         }
-        size --;
+        array[size - 1] = null;
+        size--;
         return e;
     }
 
@@ -72,13 +73,17 @@ public class MyArrayList<T> implements IMyList<T> {
         return new MyArrayListIterator(this);
     }
 
+    public Iterator<T> reverseIterator() {
+        return new MySingleLinkedListReverseIterator<>(this);
+    }
+
     private void ensureCapacity(int newCapacity) {
         if (this.capacity >= newCapacity) {
             return;
         }
 
         Object[] newArray = new Object[newCapacity];
-        for (int i = 0; i < size; i ++) {
+        for (int i = 0; i < size; i++) {
             newArray[i] = array[i];
         }
         array = newArray;
@@ -102,10 +107,54 @@ public class MyArrayList<T> implements IMyList<T> {
         public T next() {
             return list.get(pos++);
         }
+    }
+
+    private static class MySingleLinkedListReverseIterator<E> implements Iterator<E> {
+
+        private int pos;
+        private MyArrayList<E> list;
+
+        public MySingleLinkedListReverseIterator(MyArrayList<E> list) {
+            this.list = list;
+            this.pos = list.size - 1;
+        }
 
         @Override
-        public void remove() {
-            list.remove(pos--);
+        public boolean hasNext() {
+            return pos > 0;
+        }
+
+        @Override
+        public E next() {
+            return list.get(pos--);
+        }
+    }
+
+    public static void main(String[] args) {
+        MyArrayList<Integer> list = new MyArrayList<>(3);
+        list.add(0, 1);
+        list.add(0, 2);
+        list.add(0, 3);
+        list.set(0, 4);
+        int i = list.get(0);
+        list.remove(0);
+        list.remove(1);
+        list.remove(0);
+
+        list.add(0, 1);
+        list.add(0, 2);
+        list.add(0, 3);
+        Iterator<Integer> it = list.iterator();
+        while (it.hasNext()) {
+            int e = it.next();
+        }
+
+        list.add(0, 1);
+        list.add(0, 2);
+        list.add(0, 3);
+        Iterator<Integer> reverseIt = list.reverseIterator();
+        while (reverseIt.hasNext()) {
+            int e = reverseIt.next();
         }
     }
 }
