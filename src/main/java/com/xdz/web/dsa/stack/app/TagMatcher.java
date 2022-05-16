@@ -1,4 +1,7 @@
-package com.xdz.web.dsa.stack;
+package com.xdz.web.dsa.stack.app;
+
+import com.xdz.web.dsa.stack.IMyStack;
+import com.xdz.web.dsa.stack.MyArrayStack;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +32,7 @@ import java.util.Set;
  *   * if it's not empty: open tag is more than close tag. NOT MATCHED
  *   * if it's emtpy: all open tag is matched. MATCHED
  */
-public class ParenMatcher {
+public class TagMatcher {
     private static final Map<Character, Character> matchMap = new HashMap<Character, Character>() {
         {
             put('[', ']');
