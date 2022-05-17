@@ -6,7 +6,7 @@ package com.xdz.web.dsa.list;
  * Date: 2022/5/13 15:21<br/>
  * Version: 1.0<br/>
  */
-public interface IMyList<E> extends Iterable<E> {
+public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
     /**
      * set by idx
      */
@@ -36,4 +36,9 @@ public interface IMyList<E> extends Iterable<E> {
      * list is empty: no element in list. or size() == 0
      */
     boolean isEmpty();
+
+    /**
+     * 是否包含指定元素
+     */
+    boolean contains(E e);
 }

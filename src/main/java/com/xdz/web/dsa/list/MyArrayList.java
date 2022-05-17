@@ -1,6 +1,7 @@
 package com.xdz.web.dsa.list;
 
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Description: implement a list using array.
@@ -14,7 +15,7 @@ import java.util.Iterator;
  * Date: 2022/5/9 20:43<br/>
  * Version: 1.0<br/>
  */
-public class MyArrayList<T> implements IMyList<T> {
+public class MyArrayList<E> implements IMyList<E> {
     private Object[] array;
     private int capacity;
     private int size;
@@ -27,13 +28,35 @@ public class MyArrayList<T> implements IMyList<T> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public T get(int idx) {
-        return (T) array[idx];
+    public E get(int idx) {
+        return (E) array[idx];
     }
 
     @Override
-    public void set(int idx, T value) {
+    public void set(int idx, E value) {
         array[idx] = value;
+    }
+
+    @Override
+    public void add(int index, E value) {
+        ensureCapacity(size + 1);
+        for (int i = size - 1; i >= index; i--) {
+            array[i + 1] = array[i];
+        }
+        array[index] = value;
+        size++;
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public E remove(int index) {
+        E e = (E) array[index];
+        for (int i = index + 1; i < size; i++) {
+            array[i - 1] = array[i];
+        }
+        array[size - 1] = null;
+        size--;
+        return e;
     }
 
     @Override
@@ -47,33 +70,41 @@ public class MyArrayList<T> implements IMyList<T> {
     }
 
     @Override
-    public void add(int index, T value) {
-        ensureCapacity(size + 1);
-        for (int i = size - 1; i >= index; i--) {
-            array[i + 1] = array[i];
+    public boolean contains(E e) {
+        for (E value : this) {
+            if (Objects.equals(value, e)) {
+                return true;
+            }
         }
-        array[index] = value;
-        size++;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public T remove(int index) {
-        T e = (T) array[index];
-        for (int i = index + 1; i < size; i++) {
-            array[i - 1] = array[i];
-        }
-        array[size - 1] = null;
-        size--;
-        return e;
+        return false;
     }
 
     @Override
-    public Iterator<T> iterator() {
+    public void addFirst(E e) {
+        add(0, e);
+    }
+
+    @Override
+    public void addLast(E e) {
+        add(size, e);
+    }
+
+    @Override
+    public E removeFirst() {
+        return remove(0);
+    }
+
+    @Override
+    public E removeLast() {
+        return remove(size - 1);
+    }
+
+    @Override
+    public Iterator<E> iterator() {
         return new MyArrayListIterator(this);
     }
 
-    public Iterator<T> reverseIterator() {
+    public Iterator<E> reverseIterator() {
         return new MySingleLinkedListReverseIterator<>(this);
     }
 
@@ -89,12 +120,12 @@ public class MyArrayList<T> implements IMyList<T> {
         array = newArray;
     }
 
-    private class MyArrayListIterator implements Iterator<T> {
+    private class MyArrayListIterator implements Iterator<E> {
 
         private int pos = 0;
-        private MyArrayList<T> list;
+        private MyArrayList<E> list;
 
-        public MyArrayListIterator(MyArrayList<T> list) {
+        public MyArrayListIterator(MyArrayList<E> list) {
             this.list = list;
         }
 
@@ -104,7 +135,7 @@ public class MyArrayList<T> implements IMyList<T> {
         }
 
         @Override
-        public T next() {
+        public E next() {
             return list.get(pos++);
         }
     }

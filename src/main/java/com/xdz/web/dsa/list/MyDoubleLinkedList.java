@@ -68,18 +68,22 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         return new MyDoubleLinkedListIterator<>(this);
     }
 
-    public void insertFirst(E e) {
+    @Override
+    public void addFirst(E e) {
         insertAfter(head, e);
     }
 
-    public void insertLast(E e) {
+    @Override
+    public void addLast(E e) {
         insertBefore(tail, e);
     }
 
+    @Override
     public E removeFirst() {
         return remove(head.next);
     }
 
+    @Override
     public E removeLast() {
         return remove(tail.prev);
     }
@@ -122,15 +126,15 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         return p;
     }
 
-    public Node<E> prev(Node<E> node) {
+    private Node<E> prev(Node<E> node) {
         return node.prev;
     }
 
-    public Node<E> next(Node<E> node) {
+    private Node<E> next(Node<E> node) {
         return node.next;
     }
 
-    public void insertBefore(Node<E> node, E e) {
+    private void insertBefore(Node<E> node, E e) {
         Node<E> newNode = new Node<>(e);
         newNode.next = node;
         newNode.prev = node.prev;
@@ -139,11 +143,11 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         size ++;
     }
 
-    public void insertAfter(Node<E> node, E e) {
+    private void insertAfter(Node<E> node, E e) {
         insertBefore(node.next, e);
     }
 
-    public E remove(Node<E> node) {
+    private E remove(Node<E> node) {
         E e = (E) node.element;
         node.prev.next = node.next;
         node.next.prev = node.prev;
@@ -207,6 +211,7 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         p.next = nq;
     }
 
+    @Override
     public boolean contains(E e) {
         Node<E> p = head.next;
         while (p != tail) {
@@ -240,12 +245,12 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         list.remove(0);
 
         // insert
-        list.insertFirst(1);
-        list.insertFirst(2);
-        list.insertFirst(3);
-        list.insertLast(4);
-        list.insertLast(5);
-        list.insertLast(6);
+        list.addFirst(1);
+        list.addFirst(2);
+        list.addFirst(3);
+        list.addLast(4);
+        list.addLast(5);
+        list.addLast(6);
 
         // remove
         list.removeFirst();
@@ -256,7 +261,7 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         list.removeLast();
 
         // inner func
-        list.insertLast(1);
+        list.addLast(1);
         Node node = list.getNode(0);
         list.insertAfter(node, 2);
         list.insertBefore(node, 3);

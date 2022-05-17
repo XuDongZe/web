@@ -1,8 +1,7 @@
 package com.xdz.web.dsa.list;
 
-import org.checkerframework.checker.index.qual.NonNegative;
-
 import java.util.Iterator;
+import java.util.Objects;
 
 /**
  * Description: 列表的单链表实现<br/>
@@ -34,7 +33,7 @@ import java.util.Iterator;
  * for idx location, head node is -1, and first node (head.next) is 0.
  * size is element count, so valid access idx is [0, size - 1]
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class MySingleLinkedList<E> implements IMyList<E> {
     /**
      * we use it to hold the list
@@ -112,18 +111,31 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     }
 
     @Override
+    public boolean contains(E e) {
+        for (E value : this) {
+            if (Objects.equals(value, e)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
     public Iterator<E> iterator() {
         return new MySingleLinkedListIterator(this.head);
     }
 
-    public void insertFirst(E element) {
+    @Override
+    public void addFirst(E element) {
         insertAfter(head, element);
     }
 
-    public void insertLast(E element) {
+    @Override
+    public void addLast(E element) {
         insertAfter(tail, element);
     }
 
+    @Override
     public E removeFirst() {
         return removeByPrev(head);
     }
@@ -131,6 +143,7 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     /**
      * 移除最后一个元素 O(n)
      */
+    @Override
     public E removeLast() {
         Node<E> p = prev(tail);
         return removeByPrev(p);
@@ -274,12 +287,12 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         list.remove(0);
 
         // insert
-        list.insertFirst(1);
-        list.insertFirst(2);
-        list.insertFirst(3);
-        list.insertLast(4);
-        list.insertLast(5);
-        list.insertLast(6);
+        list.addFirst(1);
+        list.addFirst(2);
+        list.addFirst(3);
+        list.addLast(4);
+        list.addLast(5);
+        list.addLast(6);
 
         // remove
         list.removeFirst();
