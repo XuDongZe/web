@@ -41,4 +41,14 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
      * 是否包含指定元素
      */
     boolean contains(E e);
+
+    @Override
+    default E getFirst() {
+        return get(0);
+    }
+
+    @Override
+    default E getLast() {
+        return get(size() - 1);
+    }
 }

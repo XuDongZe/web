@@ -20,4 +20,14 @@ public interface IMyDeque<E> {
      * 删除队尾元素
      */
     E removeLast();
+
+    /**
+     * 获取第一个元素
+     */
+    E getFirst();
+
+    /**
+     * 获取最后一个元素
+     */
+    E getLast();
 }
