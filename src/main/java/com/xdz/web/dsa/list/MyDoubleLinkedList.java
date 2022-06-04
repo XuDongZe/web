@@ -161,7 +161,8 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
         // find the first node.el >= e, then insertBefore(node)
         Node node = head.next;
         while (node != tail) {
-            if (cmp.compare((E) node.element, e) >= 0) {
+            // > for stability
+            if (cmp.compare((E) node.element, e) > 0) {
                 insertBefore(node, e);
                 return;
             }

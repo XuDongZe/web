@@ -3,7 +3,7 @@ package com.xdz.web.dsa.list;
 import java.util.Comparator;
 
 /**
- * Description: TODO<br/>
+ * Description: self-adjust-list<br/>
  * Author: dongze.xu<br/>
  * Date: 2022/6/4 12:40<br/>
  * Version: 1.0<br/>
