@@ -12,11 +12,20 @@ public interface IMyBinarySearchTree<E extends Comparable<E>> {
 
     void insert(E e);
 
-    void insertAll(IMyList<E> list);
+    default void insertAll(IMyList<E> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        for (E e : list) {
+            insert(e);
+        }
+    }
 
     void remove(E e);
 
-    boolean contains(E e);
+    default boolean contains(E e) {
+        return find(e) != null;
+    }
 
     void clear();
 

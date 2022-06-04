@@ -45,22 +45,8 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
     }
 
     @Override
-    public void insertAll(IMyList<E> list) {
-        if (!list.isEmpty()) {
-            for (E e : list) {
-                insert(e);
-            }
-        }
-    }
-
-    @Override
     public void remove(E e) {
         removeIterate(e);
-    }
-
-    @Override
-    public boolean contains(E e) {
-        return find(e) != null;
     }
 
     @Override
