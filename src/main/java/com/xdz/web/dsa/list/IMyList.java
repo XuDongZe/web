@@ -1,5 +1,7 @@
 package com.xdz.web.dsa.list;
 
+import java.util.Iterator;
+
 /**
  * Description: 列表ADT<br/>
  * Author: dongze.xu<br/>
@@ -50,5 +52,15 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
     @Override
     default E getLast() {
         return get(size() - 1);
+    }
+
+    default String string() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (E e : this) {
+            builder.append(e).append(",");
+        }
+        builder.append("]");
+        return builder.toString();
     }
 }
