@@ -1,5 +1,6 @@
 package com.xdz.web.dsa.list;
 
+import java.util.Comparator;
 import java.util.Iterator;
 
 /**
@@ -14,7 +15,7 @@ import java.util.Iterator;
  * with tail-operations: removeLast insertLast, which is used a lot in doubled-queue.
  */
 @SuppressWarnings("ALL")
-public class MyDoubleLinkedList<E> implements IMyList<E> {
+public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
 
     private Node<E> head;
     private Node<E> tail;
@@ -155,6 +156,21 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         return e;
     }
 
+    @Override
+    public void addAdjust(E e, Comparator<E> cmp) {
+        // find the first node.el >= e, then insertBefore(node)
+        Node node = head.next;
+        while (node != tail) {
+            if (cmp.compare((E) node.element, e) >= 0) {
+                insertBefore(node, e);
+                return;
+            }
+            node = node.next;
+        }
+        // if e is the max one, then insertBefore tail
+        insertBefore(tail, e);
+    }
+
     private static class Node<E> {
         private Object element;
         private Node<E> prev;
@@ -271,5 +287,9 @@ public class MyDoubleLinkedList<E> implements IMyList<E> {
         while (it.hasNext()) {
             int e = it.next();
         }
+
+        list.addAdjust(30);
+        list.addAdjust(20);
+        list.addAdjust(10);
     }
 }
