@@ -32,7 +32,7 @@ public interface IMyBinarySearchTree<E extends Comparable<E>> {
     boolean isEmpty();
 
     class Node<E extends Comparable<E>> {
-        Object element;
+        E element;
         Node<E> left;
         Node<E> right;
 
@@ -40,11 +40,11 @@ public interface IMyBinarySearchTree<E extends Comparable<E>> {
 
         }
 
-        public Node(Object element) {
+        public Node(E element) {
             this.element = element;
         }
 
-        public Node(Object element, Node<E> left, Node<E> right) {
+        public Node(E element, Node<E> left, Node<E> right) {
             this.element = element;
             this.left = left;
             this.right = right;

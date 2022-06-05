@@ -18,7 +18,7 @@ import com.xdz.web.dsa.list.MyArrayList;
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySearchTree<E> {
 
-    private Node<E> root;
+    protected Node<E> root;
 
     public MyBinarySearchTree() {
 
