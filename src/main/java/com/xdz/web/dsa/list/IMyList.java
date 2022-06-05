@@ -24,6 +24,15 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
      */
     void add(int idx, E e);
 
+    default void addAll(E[] array) {
+        if (array == null || array.length <= 0) {
+            return;
+        }
+        for (E e : array) {
+            addLast(e);
+        }
+    }
+
     /**
      * remove by idx
      */
