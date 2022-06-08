@@ -22,7 +22,7 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E> {
 
     @Override
     public void remove(E e) {
-        removeRecursive(root, e);
+        root = removeRecursive(root, e);
     }
 
     @Override
@@ -33,6 +33,9 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E> {
     }
 
     private Node<E> adjustNode(Node<E> root) {
+        if (root == null) {
+            return null;
+        }
         int leftHeight = height(root.left), rightHeight = height(root.right);
         if (leftHeight - rightHeight > 1) {
             // root.left != null
@@ -114,5 +117,12 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E> {
         list2.addAll(new Integer[]{6, 3, 7, 2, 4, 5});
         tree.insertAll(list2);
         System.out.println("after double rotate, isAvl: " + tree.isAvl());
+
+        tree.remove(2); // remove none child node
+        boolean avl = tree.isAvl();
+        tree.remove(6); // remove one child node
+        avl = tree.isAvl();
+        tree.remove(5); // remove two child node: root
+        avl = tree.isAvl();
     }
 }
