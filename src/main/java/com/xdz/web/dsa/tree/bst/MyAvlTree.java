@@ -1,7 +1,9 @@
 package com.xdz.web.dsa.tree.bst;
 
+import com.xdz.web.dsa.holder.IntHolder;
 import com.xdz.web.dsa.list.IMyList;
 import com.xdz.web.dsa.list.MyArrayList;
+import jnr.ffi.annotations.In;
 
 /**
  * Description: avl-tree. bst + self-balancing: left-rotate/right-rotate<br/>
@@ -92,9 +94,12 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E>{
     }
 
     public boolean isAvl() {
-        return isAvl(root);
+        return isAvlV2(root, new IntHolder());
     }
 
+    /**
+     * O(n * log n). n for n nodes, log(n) for height(node) for each node.
+     */
     private boolean isAvl(Node node) {
         if (node == null) {
             return true;
@@ -105,6 +110,27 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E>{
         }
         // test node.left && node.right
         return isAvl(node.left) && isAvl(node.right);
+    }
+
+    /**
+     * O(n) just the same as postOrder.
+     * do Math.abs && max each n nodes.
+     */
+    private boolean isAvlV2(Node node, IntHolder heightHolder) {
+        if (node == null) {
+            heightHolder.value = -1;
+            return true;
+        }
+
+        IntHolder leftHolder = new IntHolder();
+        IntHolder rightHolder = new IntHolder();
+        if (isAvlV2(node.left, leftHolder) && isAvlV2(node.right, rightHolder)) {
+            if (Math.abs(leftHolder.value - rightHolder.value) <= 1) {
+                heightHolder.value = Math.max(leftHolder.value, rightHolder.value) + 1;
+                return true;
+            }
+        }
+        return false;
     }
 
     public static void main(String[] args) {
