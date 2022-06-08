@@ -93,20 +93,6 @@ public class MyHuffmanTree {
         return list;
     }
 
-    private static void decode(Node node, String data, int idx, StringBuilder resultHolder) {
-        if (idx >= data.length()) {
-            return;
-        }
-
-        if (node.isLeaf()) {
-            resultHolder.append(node.ch);
-        } else {
-            char ch = data.charAt(idx);
-            Node next = ch == '0' ? node.left : node.right;
-            decode(next, data, idx + 1, resultHolder);
-        }
-    }
-
     private Map<Character, String> getCodeMap() {
         Map<Character, String> map = Maps.newHashMap();
         getCodeMap(root, null, "", map);
