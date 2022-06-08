@@ -10,6 +10,8 @@ import com.xdz.web.dsa.list.IMyList;
  */
 public interface IMyBinaryTree<E extends Comparable<E>> {
 
+    Node<E> root();
+
     boolean isBst();
 
     boolean isAvl();
@@ -50,6 +52,15 @@ public interface IMyBinaryTree<E extends Comparable<E>> {
 
     default void insertAll(IMyList<E> list) {
         if (list == null || list.isEmpty()) {
+            return;
+        }
+        for (E e : list) {
+            insert(e);
+        }
+    }
+
+    default void insertAll(E[] list) {
+        if (list == null || list.length <= 0) {
             return;
         }
         for (E e : list) {
