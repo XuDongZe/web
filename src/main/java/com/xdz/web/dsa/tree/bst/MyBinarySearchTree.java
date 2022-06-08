@@ -1,10 +1,13 @@
 package com.xdz.web.dsa.tree.bst;
 
+import com.xdz.web.dsa.holder.IntHolder;
 import com.xdz.web.dsa.list.IMyList;
 import com.xdz.web.dsa.list.MyArrayList;
 import com.xdz.web.dsa.tree.bt.IMyBinaryTree;
 import com.xdz.web.dsa.tree.bt.MyBinaryTree;
 import org.python.modules.itertools.repeat;
+
+import java.util.Arrays;
 
 /**
  * Description: 二叉查找数<br/>
@@ -337,6 +340,31 @@ public class MyBinarySearchTree<E extends Comparable<E>> extends MyBinaryTree<E>
         return root;
     }
 
+    /**
+     * the same with in-order: 2 * O(n * log(n)). first pass create & second pass in-order.
+     * we can easily get a one pass solution: record the min-value: the left-max node and save it to array after each element insert.
+     * and this is just the select-sort: select the min value and put it to array.
+     * and we use extra space for bst.
+     */
+    public static <E extends Comparable<E>> void sort(E[] array) {
+        IMyBinarySearchTree<E> bst = new MyBinarySearchTree<>();
+        bst.insertAll(array);
+        sort(bst.root(), array, new IntHolder());
+    }
+
+    /**
+     * bst in-order => array
+     */
+    private static <E extends Comparable<E>> void sort(Node<E> root, E[] array, IntHolder idxHolder) {
+        if (root == null || idxHolder.value >= array.length) {
+            return;
+        }
+        sort(root.left, array, idxHolder);
+        array[idxHolder.value] = root.element;
+        idxHolder.value ++;
+        sort(root.right, array, idxHolder);
+    }
+
     public static void main(String[] args) {
         IMyList<Integer> list = new MyArrayList<>(7);
         list.addLast(5);
@@ -370,5 +398,9 @@ public class MyBinarySearchTree<E extends Comparable<E>> extends MyBinaryTree<E>
         boolean empty = tree.isEmpty();
         tree.clear();
         empty = tree.isEmpty();
+
+        Integer[] sortArray = {1, 6, 7, 2, 5};
+        MyBinarySearchTree.sort(sortArray);
+        System.out.println(Arrays.toString(sortArray));
     }
 }
