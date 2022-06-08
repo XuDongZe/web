@@ -2,6 +2,9 @@ package com.xdz.web.dsa.tree.bst;
 
 import com.xdz.web.dsa.list.IMyList;
 import com.xdz.web.dsa.list.MyArrayList;
+import com.xdz.web.dsa.tree.bt.IMyBinaryTree;
+import com.xdz.web.dsa.tree.bt.MyBinaryTree;
+import org.python.modules.itertools.repeat;
 
 /**
  * Description: 二叉查找数<br/>
@@ -16,9 +19,7 @@ import com.xdz.web.dsa.list.MyArrayList;
  * </pre>
  */
 @SuppressWarnings({"unchecked", "rawtypes"})
-public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySearchTree<E> {
-
-    protected Node<E> root;
+public class MyBinarySearchTree<E extends Comparable<E>> extends MyBinaryTree<E> implements IMyBinarySearchTree<E> {
 
     public MyBinarySearchTree() {
 
@@ -49,20 +50,9 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
         removeIterate(e);
     }
 
-    @Override
-    public void clear() {
-        clearRecursive(root);
-        root = null;
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return root == null;
-    }
-
     private Node<E> findIterate(Node<E> root, E e) {
         while (root != null) {
-            int compareResult = e.compareTo(root.getElement());
+            int compareResult = e.compareTo(root.element);
             if (compareResult < 0) {
                 root = root.left;
             } else if (compareResult > 0) {
@@ -76,6 +66,7 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
 
     /**
      * find the minValue in subTree roots by root.
+     *
      * @param root the subTree's root
      * @return the min element or null if root is empty
      */
@@ -92,6 +83,7 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
     /**
      * find max element in subTree which roots by root
      * we use a none-recursive one.
+     *
      * @param root the subTree's root
      * @return the max element
      */
@@ -123,7 +115,7 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
      *
      * so it is easier than remove func
      * </pre>
-     * */
+     */
     private void insertIterate(E e) {
         if (root == null) {
             root = new Node<>(e);
@@ -132,7 +124,7 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
         // now root != null
         Node<E> t = root;
         while (true) {
-            int compareResult = e.compareTo(t.getElement());
+            int compareResult = e.compareTo(t.element);
             if (compareResult < 0) {
                 if (t.left == null) {
                     t.left = new Node<>(e);
@@ -162,7 +154,7 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
         Node<E> pp = null; // p node's parent
         while (p != null) {
             // pp step one to p, p step one
-            int compareResult = e.compareTo(p.getElement());
+            int compareResult = e.compareTo(p.element);
             if (compareResult < 0) {
                 pp = p;
                 p = p.left;
@@ -255,7 +247,7 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
             return null;
         }
 
-        int compareResult = e.compareTo(root.getElement());
+        int compareResult = e.compareTo(root.element);
         if (compareResult < 0) {
             return findRecursive(root.left, e);
         } else if (compareResult > 0) {
@@ -265,23 +257,25 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
         }
     }
 
-    /**<pre>
+    /**
+     * <pre>
      * add a new node which element is e in subTree which roots by root.
      * we need to put e to a correct position to hold BST feature: left <= root <= right
      * 1. assume that e is a new max element, then it should be placed to right-max, that means first get moxNode then put to its right.
      * 2. assume that e is a new min element, then it should be placed to left-max, that means first get minNode then put to its left.
      * 3. assume that e is not new-max or new-min, just normal one. then there is one min node A is larger than it and another one max node B is smaller than it:
      * </pre>
+     *
      * @param root the subTree's root
-     * @param e element need to be added
+     * @param e    element need to be added
      * @return new root
      */
-    private Node<E> insertRecursive(Node<E> root, E e) {
+    protected Node<E> insertRecursive(Node<E> root, E e) {
         if (root == null) {
             return new Node<>(e);
         }
 
-        int compareResult = e.compareTo(root.getElement());
+        int compareResult = e.compareTo(root.element);
         if (compareResult < 0) {
             root.left = insertRecursive(root.left, e);
         } else if (compareResult > 0) {
@@ -292,30 +286,58 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
         return root;
     }
 
-//    private Node<E> removeRecursive(Node<E> root, E e) {
-//
-//    }
-
-
     /**
-     * set all node's left and right pointer to null. help gc.
+     * remove node(node.element == e) in bst-tree node.
+     *
      * @param root
+     * @param e
+     * @return
      */
-    private void clearRecursive(Node<E> root) {
+    protected Node<E> removeRecursive(Node<E> root, E e) {
         if (root == null) {
-            return;
+            return null;
         }
-        if (root.left != null) {
-            clearRecursive(root.left);
-            root.left = null;
+
+        int compareResult = e.compareTo(root.element);
+        if (compareResult < 0) {
+            root.left = removeRecursive(root.left, e);
+        } else if (compareResult > 0) {
+            root.right = removeRecursive(root.right, e);
+        } else {
+            if (root.left == null && root.right == null) {
+                // no child
+                root = null;
+            } else if (root.left != null && root.right == null) {
+                // one child. new root is the not null child.
+                root = root.left;
+            } else if (root.right != null && root.left == null) {
+                root = root.right;
+            } else {
+                /**
+                 * <pre>
+                 * two child
+                 * just the same with array-delete
+                 * copy root's successor's e to root and then remove the successor. (we call logicNextNode as successor)
+                 * for the remove, just do root.next = successor.next.
+                 * we repeat the op, and we will finally remove a no-child node then complete the whole process.
+                 * for bst, a root's successor is minValue(root.right). we use the `findMin` func to got it.
+                 * the successor.next will return by recursive-func as the new root of the removed-node subtree.
+                 *
+                 * </pre>
+                 */
+                // replace root.element use logic-next
+                Node<E> next = findMin(root.right);
+                root.element = next.element;
+                // remove node successor: we know it in root.right
+                root.right = removeRecursive(root.right, next.element);
+                // we maybe merge find & remove the min(root.right) in one pass: findAndRemove(), just as pop() func in stack or queue.
+            }
         }
-        if (root.right != null) {
-            clearRecursive(root.right);
-            root.right = null;
-        }
+        // root maybe null: when remove a leaf node, the new root is null.
+        return root;
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         IMyList<Integer> list = new MyArrayList<>(7);
         list.addLast(5);
         list.addLast(6);
@@ -327,11 +349,15 @@ public class MyBinarySearchTree<E extends Comparable<E>> implements IMyBinarySea
         // now list.size() == 7
         IMyBinarySearchTree<Integer> tree = new MyBinarySearchTree<>();
         tree.insertAll(list);
+        boolean bst = tree.isBst();
+        IMyBinaryTree<Integer> bt = new MyBinaryTree<>();
+        bt.insertAll(list);
+        bst = bt.isBst();
         boolean contains = tree.contains(8); // contains
         contains = tree.contains(-1); // not contains
         Node<Integer> p = tree.find(8);
-        int min = tree.findMin().getElement(); // 2
-        int max = tree.findMax().getElement(); // 9
+        int min = tree.findMin().element; // 2
+        int max = tree.findMax().element; // 9
         tree.insert(2); // repeat one
         tree.insert(1); // new min
         tree.insert(10); // new max

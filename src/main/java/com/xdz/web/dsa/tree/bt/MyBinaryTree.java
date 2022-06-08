@@ -9,63 +9,178 @@ import com.xdz.web.dsa.stack.MyArrayStack;
 import jdk.nashorn.internal.runtime.regexp.joni.encoding.IntHolder;
 
 /**
- * Description: TODO<br/>
+ * Description: binary tree link implement<br/>
  * Author: dongze.xu<br/>
  * Date: 2022/5/22 16:19<br/>
  * Version: 1.0<br/>
  */
 @SuppressWarnings("ALL")
-public class MyBinaryTree<E extends Comparable<E>> {
+public class MyBinaryTree<E extends Comparable<E>> implements IMyBinaryTree<E> {
 
-    private Node<E> root;
+    protected Node<E> root;
 
-    Node<E> previous = null;
-    private int linearStatus;
-    private static final int LINEA_STATUS_NONE = 0;
-    private static final int LINEA_STATUS_PRE = 1;
-    private static final int LINEA_STATUS_IN = 2;
-    private static final int LINEA_STATUS_POST = 3;
+    @Override
+    public boolean isBst() {
+        return isBst(root);
+    }
 
+    @Override
+    public boolean isAvl() {
+        return isAvlV2(root, new com.xdz.web.dsa.holder.IntHolder());
+    }
+
+    @Override
+    public Node<E> find(E e) {
+        return null;
+    }
+
+    @Override
+    public void insert(E e) {
+        // pre in post
+    }
+
+    @Override
+    public void remove(E e) {
+
+    }
+
+    @Override
+    public void clear() {
+        clearRecursive(root);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return root != null;
+    }
+
+    @Override
     public void preOrder() {
         preOrderIterate(root);
     }
 
+    @Override
     public void inOrder() {
         inOrderIterate(root);
     }
 
+    @Override
     public void postOrder() {
         postOrderIterate(root);
     }
 
+    @Override
     public void levelOrder() {
         levelOrderIterateWithLine(root);
     }
 
-    public void preOrderThread() {
-        preOrderThread(root);
-        linearStatus = LINEA_STATUS_PRE;
-        previous = null;
-    }
-
-    public void inOrderThread() {
-        inOrderThread(root, null);
-        linearStatus = LINEA_STATUS_IN;
-        previous = null;
-    }
-
-    public void postOrderThread() {
-        postOrderThread(root, null);
-        linearStatus = LINEA_STATUS_POST;
-        previous = null;
-    }
-
+    @Override
     public int size() {
         return sizeRecursive(root);
     }
 
+    @Override
     public int height() {
         return heightRecursize(root);
+    }
+
+    @Override
+    public void preOrder(Node<E> root) {
+        preOrderIterate2(root);
+    }
+
+    @Override
+    public void inOrder(Node<E> root) {
+        inOrderIterate(root);
+    }
+
+    @Override
+    public void postOrder(Node<E> root) {
+        postOrderIterate(root);
+    }
+
+    @Override
+    public void levelOrder(Node<E> root) {
+        levelOrderIterateWithLine(root);
+    }
+
+    @Override
+    public int size(Node<E> root) {
+        return sizeRecursive(root);
+    }
+
+    @Override
+    public int height(Node<E> root) {
+        return heightRecursize(root);
+    }
+
+    /**
+     * set all node's left and right pointer to null. help gc.
+     *
+     * @param root
+     */
+    private void clearRecursive(Node<E> root) {
+        if (root == null) {
+            return;
+        }
+        if (root.left != null) {
+            clearRecursive(root.left);
+            root.left = null;
+        }
+        if (root.right != null) {
+            clearRecursive(root.right);
+            root.right = null;
+        }
+    }
+
+    private boolean isBst(Node<E> root) {
+        if (root == null) {
+            return true;
+        }
+        if (root.left != null && root.left.element.compareTo(root.element) > 0) {
+            return false;
+        }
+        if (root.right != null && root.right.element.compareTo(root.element) < 0) {
+            return false;
+        }
+        return isBst(root.left) && isBst(root.right);
+    }
+
+
+    /**
+     * O(n * log n). n for n nodes, log(n) for height(node) for each node.
+     */
+    private boolean isAvl(Node node) {
+        if (node == null) {
+            return true;
+        }
+        // test node
+        if (Math.abs(height(node.left) - height(node.right)) > 1) {
+            return false;
+        }
+        // test node.left && node.right
+        return isAvl(node.left) && isAvl(node.right);
+    }
+
+    /**
+     * O(n) just the same as postOrder.
+     * do Math.abs && max each n nodes.
+     */
+    private boolean isAvlV2(Node node, com.xdz.web.dsa.holder.IntHolder heightHolder) {
+        if (node == null) {
+            heightHolder.value = -1;
+            return true;
+        }
+
+        com.xdz.web.dsa.holder.IntHolder leftHolder = new com.xdz.web.dsa.holder.IntHolder();
+        com.xdz.web.dsa.holder.IntHolder rightHolder = new com.xdz.web.dsa.holder.IntHolder();
+        if (isAvlV2(node.left, leftHolder) && isAvlV2(node.right, rightHolder)) {
+            if (Math.abs(leftHolder.value - rightHolder.value) <= 1) {
+                heightHolder.value = Math.max(leftHolder.value, rightHolder.value) + 1;
+                return true;
+            }
+        }
+        return false;
     }
 
     public static <E extends Comparable<E>> MyBinaryTree<E> create(IMyList<E> list) {
@@ -269,97 +384,6 @@ public class MyBinaryTree<E extends Comparable<E>> {
         return Math.max(heightRecursize(root.left), heightRecursize(root.right)) + 1;
     }
 
-    /**
-     * just handle node and previous's relationship.
-     * node.left == previous
-     * and node.right == right
-     */
-    private void preOrderThread(Node<E> node) {
-        if (node == null) {
-            return;
-        }
-        doLinearLink(node);
-        if (node.leftTag == Node.TAG_NODE) {
-            preOrderThread(node.left);
-        }
-        if (node.rightTag == Node.TAG_NODE) {
-            preOrderThread(node.right);
-        }
-    }
-
-    private void inOrderThread(Node<E> node, Node<E> previous) {
-        if (node == null) {
-            return;
-        }
-        inOrderThread(node.left, node);
-        doLinearLink(node);
-        inOrderThread(node.right, node);
-    }
-
-    private void postOrderThread(Node<E> node, Node<E> previous) {
-        if (node == null) {
-            return;
-        }
-        postOrderThread(node.left, node);
-        postOrderThread(node.right, node);
-        doLinearLink(node);
-    }
-
-    private void doLinearLink(Node<E> node) {
-        // if node.left == null then set prev(node) == previous
-        if (node.left == null) {
-            node.left = previous;
-            node.leftTag = Node.TAG_LINEAR;
-        }
-        // if previous.right == null then set next(previous) = node
-        if (previous != null && previous.right == null) {
-            previous.right = node;
-            previous.rightTag = Node.TAG_LINEAR;
-        }
-        previous = node;
-    }
-
-//    private void preOrderLinear(Node<E> root) {
-//        if (root == null) {
-//            return;
-//        }
-//
-//        while (root != null) {
-//            while (root.leftTag == Node.TAG_NODE) {
-//                System.out.println(root.element);
-//                root = root.left;
-//            }
-//            while (root.rightTag == Node.TAG_LINEAR) {
-//                System.out.println(root.element);
-//                root = root.right;
-//            }
-//            // 右子树
-//            root = root.right;
-//        }
-//    }
-
-    public static class Node<E> {
-        static final int TAG_LINEAR = 1;
-        static final int TAG_NODE = 0;
-        Object element;
-        Node left;
-        Node right;
-
-        // leftTag & rightTag for linear.
-        int leftTag;
-        int rightTag;
-
-        public Node(Object element) {
-            this.element = element;
-        }
-
-        public Node(Object element, Node left, Node right) {
-            this.element = element;
-            this.left = left;
-            this.right = right;
-        }
-    }
-
     public static void main(String[] args) {
         IMyList<Integer> list = new MyArrayList<>(10);
         list.addLast(1);
@@ -386,13 +410,10 @@ public class MyBinaryTree<E extends Comparable<E>> {
         binaryTree.postOrderRecursive(binaryTree.root);
 
         binaryTree.levelOrder();
-        binaryTree.levelOrderIterateWithLine(binaryTree.root);
+        binaryTree.levelOrderIterate(binaryTree.root);
 
-        int size = binaryTree.size();
+        System.out.println(binaryTree.size());
 
-        int height = binaryTree.height();
-
-        binaryTree.preOrderThread();
-        binaryTree.preOrder();
+        System.out.println(binaryTree.height());
     }
 }

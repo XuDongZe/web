@@ -3,7 +3,6 @@ package com.xdz.web.dsa.tree.bst;
 import com.xdz.web.dsa.holder.IntHolder;
 import com.xdz.web.dsa.list.IMyList;
 import com.xdz.web.dsa.list.MyArrayList;
-import jnr.ffi.annotations.In;
 
 /**
  * Description: avl-tree. bst + self-balancing: left-rotate/right-rotate<br/>
@@ -12,16 +11,28 @@ import jnr.ffi.annotations.In;
  * Version: 1.0<br/>
  */
 @SuppressWarnings({"rawtypes", "unchecked"})
-public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E>{
+public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E> {
 
     @Override
     public void insert(E e) {
         super.insert(e);
         // adjust
-        adjustAfterInsert();
+        root = adjustNode(root);
     }
 
-    private void adjustAfterInsert() {
+    @Override
+    public void remove(E e) {
+        removeRecursive(root, e);
+    }
+
+    @Override
+    protected Node<E> removeRecursive(Node<E> root, E e) {
+        root = super.removeRecursive(root, e);
+        root = adjustNode(root);
+        return root;
+    }
+
+    private Node<E> adjustNode(Node<E> root) {
         int leftHeight = height(root.left), rightHeight = height(root.right);
         if (leftHeight - rightHeight > 1) {
             // root.left != null
@@ -39,6 +50,7 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E>{
             // now height(right.right) > height(right.left)
             root = leftRotate(root);
         }
+        return root;
     }
 
     /**<pre>
@@ -79,58 +91,6 @@ public class MyAvlTree<E extends Comparable<E>> extends MyBinarySearchTree<E>{
         node.left = left.right;
         left.right = node;
         return left;
-    }
-
-    /**
-     * find the height of a tree which root by node.
-     * we define -1 for root == null and 0 for just one root node.
-     * @param node root of subtree
-     */
-    public int height(Node node) {
-        if (node == null) {
-            return -1;
-        }
-        return Math.max(height(node.left), height(node.right)) + 1;
-    }
-
-    public boolean isAvl() {
-        return isAvlV2(root, new IntHolder());
-    }
-
-    /**
-     * O(n * log n). n for n nodes, log(n) for height(node) for each node.
-     */
-    private boolean isAvl(Node node) {
-        if (node == null) {
-            return true;
-        }
-        // test node
-        if (Math.abs(height(node.left) - height(node.right)) > 1) {
-            return false;
-        }
-        // test node.left && node.right
-        return isAvl(node.left) && isAvl(node.right);
-    }
-
-    /**
-     * O(n) just the same as postOrder.
-     * do Math.abs && max each n nodes.
-     */
-    private boolean isAvlV2(Node node, IntHolder heightHolder) {
-        if (node == null) {
-            heightHolder.value = -1;
-            return true;
-        }
-
-        IntHolder leftHolder = new IntHolder();
-        IntHolder rightHolder = new IntHolder();
-        if (isAvlV2(node.left, leftHolder) && isAvlV2(node.right, rightHolder)) {
-            if (Math.abs(leftHolder.value - rightHolder.value) <= 1) {
-                heightHolder.value = Math.max(leftHolder.value, rightHolder.value) + 1;
-                return true;
-            }
-        }
-        return false;
     }
 
     public static void main(String[] args) {
