@@ -20,6 +20,11 @@ public class MyBinaryTree<E extends Comparable<E>> implements IMyBinaryTree<E> {
     protected Node<E> root;
 
     @Override
+    public Node<E> root() {
+        return root;
+    }
+
+    @Override
     public boolean isBst() {
         return isBst(root);
     }
