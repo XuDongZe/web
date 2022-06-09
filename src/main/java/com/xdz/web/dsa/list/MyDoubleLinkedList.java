@@ -206,6 +206,11 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
             p = p.next;
             return (E) p.element;
         }
+
+        @Override
+        public void remove() {
+            p.prev.next = p.next;
+        }
     }
 
     public void exchange(int i, int j) {
