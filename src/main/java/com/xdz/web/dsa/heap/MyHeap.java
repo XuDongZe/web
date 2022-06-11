@@ -1,7 +1,5 @@
 package com.xdz.web.dsa.heap;
 
-import jnr.ffi.annotations.In;
-
 /**
  * Description: priority-queue heap array implement<br/>
  * Author: dongze.xu<br/>
@@ -86,52 +84,29 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
     }
 
     public MyHeap(boolean minHeap) {
+        this(minHeap, new Object[DEFAULT_CAPACITY], 0);
+    }
+
+    public MyHeap(boolean minHeap, Object[] array, int size) {
         this.minHeap = minHeap;
-        clear();
+        this.array = array;
+        this.size = size;
     }
 
     @Override
     public void insert(E e) {
-        ensureCapacity();
-        // hole percolate up
-        int hole = ++size, parent;
-        // find e > array[parent] then set array[hole] = e. parent = parentIdx(hole).
-        // hold array[hole] un-used
-        for (; hole > 1; hole = parent) {
-            boolean parentLarger = e.compareTo(elementAt(parent = parentIdx(hole))) < 0;
-            if ((minHeap && parentLarger) || (!minHeap && !parentLarger)) {
-                array[hole] = array[parent];
-            } else {
-                break;
-            }
-        }
-        array[hole] = e;
+        ensureCapacityForInsert();
+        array[++size] = e;
+        // adjust size-node
+        percolateUp(size);
     }
 
     @Override
     public E pop() {
         E top = top();
-        E tmp = (E) (array[1] = (E) array[size--]);
-        // percolate down from array[1]
-        int hole = 1, child;
-        for (; (child = leftChildIdx(hole)) <= size; hole = child) {
-            // find min childIdx
-            if (child < size) {
-                boolean rightLarger = elementAt(child + 1).compareTo(elementAt(child)) > 0;
-                if ((minHeap && !rightLarger) || (!minHeap && rightLarger)) {
-                    child = child + 1;
-                }
-            }
-            // find tmp < array[child] then set array[hole] = tmp; hole = parentIdx(child).
-            // hold array[hole] un-used
-            boolean childLarger = tmp.compareTo(elementAt(child)) < 0;
-            if ((minHeap && !childLarger) || (!minHeap && childLarger)) {
-                array[hole] = array[child];
-            } else {
-                break;
-            }
-        }
-        array[hole] = tmp;
+        array[1] = array[size--];
+        // adjust 1-node
+        percolateDown(1);
         // return old min value
         return top;
     }
@@ -155,7 +130,61 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
         return size;
     }
 
-    private void ensureCapacity() {
+    /**
+     * <pre>
+     * percolate up from i-node. that means i-node maybe not the right position for its value.
+     * we need to find a new position to place i-node value.
+     * we use element step-by-step copy to stay the struct of an array.
+     * </pre>
+     */
+    private void percolateUp(int i) {
+        E tmp = elementAt(i);
+        // find e > array[parent] then set array[hole] = e. parent = parentIdx(hole).
+        // hold array[hole] un-used
+        int hole = i, parent;
+        for (; hole > 1; hole = parent) {
+            boolean parentLarger = tmp.compareTo(elementAt(parent = parentIdx(hole))) < 0;
+            if ((minHeap && parentLarger) || (!minHeap && !parentLarger)) {
+                array[hole] = array[parent];
+            } else {
+                break;
+            }
+        }
+        array[hole] = tmp;
+    }
+
+    /**
+     * <pre>
+     * from i node, start percolate. that means i node now maybe not place here. we need
+     * to find a new position to place the i-node val.
+     * we use element step-by-step copy to stay the struct of an array.
+     * </pre>
+     */
+    private void percolateDown(int i) {
+        // percolate down from array[1]
+        E tmp = elementAt(i);
+        int hole = i, child;
+        for (; (child = leftChildIdx(hole)) <= size; hole = child) {
+            // find min childIdx
+            if (child < size) {
+                boolean rightLarger = elementAt(child + 1).compareTo(elementAt(child)) > 0;
+                if ((minHeap && !rightLarger) || (!minHeap && rightLarger)) {
+                    child = child + 1;
+                }
+            }
+            // find tmp < array[child] then set array[hole] = tmp; hole = parentIdx(child).
+            // hold array[hole] un-used
+            boolean childLarger = tmp.compareTo(elementAt(child)) < 0;
+            if ((minHeap && !childLarger) || (!minHeap && childLarger)) {
+                array[hole] = array[child];
+            } else {
+                break;
+            }
+        }
+        array[hole] = tmp;
+    }
+
+    private void ensureCapacityForInsert() {
         // array[0] is not used. so space-size = size + 1
         if (size + 1 >= array.length) {
             int newCapacity = array.length * 2 + 1;
@@ -181,6 +210,23 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
         return (E) array[idx];
     }
 
+    /**
+     * <pre>
+     * complex: O(n).
+     * we do not use n times insert op. todo
+     * </pre>
+     */
+    public static <E extends Comparable<E>> MyHeap<E> create(E[] array, boolean minHeap) {
+        Object[] newArray = new Object[array.length + 1];
+        System.arraycopy(array, 0, newArray, 1, array.length);
+        MyHeap<E> newHeap = new MyHeap<>(minHeap, newArray, array.length);
+        // adjust each parent node. from bottom to top.
+        for (int i = newHeap.size() / 2; i > 0; i--) {
+            newHeap.percolateDown(i);
+        }
+        return newHeap;
+    }
+
     public static void main(String[] args) {
         System.out.println("minHeap");
         IMyHeap<Integer> minHeap = new MyHeap<>();
@@ -198,6 +244,18 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
         }
         while (!maxHeap.isEmpty()) {
             System.out.println(maxHeap.pop());
+        }
+
+        Integer[] array = new Integer[]{8, 4, 6, 1, 4, 7, 26, 45, 178, 12};
+        MyHeap<Integer> heap = MyHeap.create(array, true);
+        System.out.println("create minHeap");
+        while (!heap.isEmpty()) {
+            System.out.println(heap.pop());
+        }
+        heap = MyHeap.create(array, false);
+        System.out.println("create maxHeap");
+        while (!heap.isEmpty()) {
+            System.out.println(heap.pop());
         }
     }
 }
