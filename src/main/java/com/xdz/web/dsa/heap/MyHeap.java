@@ -220,10 +220,15 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
      * we do not use n times insert op. todo
      * </pre>
      */
-    public static <E extends Comparable<E>> MyHeap<E> create(E[] array, boolean minHeap) {
-        Object[] newArray = new Object[array.length];
-        System.arraycopy(array, 0, newArray, 0, array.length);
-        MyHeap<E> newHeap = new MyHeap<E>(newArray, array.length, minHeap ? Comparator.naturalOrder() : Comparator.reverseOrder());
+    public static <E extends Comparable<E>> MyHeap<E> create(E[] array, Comparator<E> cmp) {
+        return create(array, 0, array.length, cmp);
+    }
+
+    public static <E extends Comparable<E>> MyHeap<E> create(E[] array, int start, int end, Comparator<E> cmp) {
+        int len = end - start;
+        Object[] newArray = new Object[len];
+        System.arraycopy(array, start, newArray, 0, len);
+        MyHeap<E> newHeap = new MyHeap<E>(newArray, newArray.length, cmp);
         // adjust each parent node. from bottom to top.
         for (int i = newHeap.size() / 2; i >= 0; i--) {
             newHeap.percolateDown(i);
@@ -236,7 +241,7 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
             // reverse cmp, for stack
             return cmp.compare(o2, o1);
         });
-        for (int i = heap.size() / 2; i >= 0; i --) {
+        for (int i = heap.size() / 2; i >= 0; i--) {
             heap.percolateDown(i);
         }
 
@@ -245,6 +250,16 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
             // array is the same with heap.array. memory-shared, avoid mem-copy. but be care of here.
             // now heap's order is opposite with before. use ad a stack.
             heap.array[idx] = heap.pop();
+        }
+    }
+
+    /**
+     * use extra space O(end - start)
+     */
+    public static <E extends Comparable<E>> void sort(E[] array, int start, int end, Comparator<E> cmp) {
+        MyHeap<E> heap = create(array, start, end, cmp);
+        for (int i = start; i < end; i++) {
+            array[i] = heap.pop();
         }
     }
 
@@ -268,12 +283,12 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
         }
 
         Integer[] array = new Integer[]{8, 4, 6, 1, 4, 7, 26, 45, 178, 12};
-        MyHeap<Integer> heap = MyHeap.create(array, true);
+        MyHeap<Integer> heap = MyHeap.create(array, Comparator.naturalOrder());
         System.out.println("create minHeap");
         while (!heap.isEmpty()) {
             System.out.println(heap.pop());
         }
-        heap = MyHeap.create(array, false);
+        heap = MyHeap.create(array, Comparator.reverseOrder());
         System.out.println("create maxHeap");
         while (!heap.isEmpty()) {
             System.out.println(heap.pop());
