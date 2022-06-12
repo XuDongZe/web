@@ -1,5 +1,7 @@
 package com.xdz.web.dsa.heap;
 
+import com.xdz.web.util.CheckUtil;
+
 import java.util.Comparator;
 
 /**
@@ -84,18 +86,16 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
     private final Comparator<E> cmp;
 
     public MyHeap() {
-        this(true);
+        this(Comparator.naturalOrder());
     }
 
-    public MyHeap(boolean minHeap) {
-        this(new Object[DEFAULT_CAPACITY], 0, minHeap);
-    }
-
-    public MyHeap(Object[] array, int size, boolean minHeap) {
-        this(array, size, minHeap ? Comparator.naturalOrder() : Comparator.reverseOrder());
+    public MyHeap(Comparator<E> cmp) {
+        this(new Object[DEFAULT_CAPACITY], 0, cmp);
     }
 
     public MyHeap(Object[] array, int size, Comparator<E> cmp) {
+        CheckUtil.checkNotNull(array, "heap constructor array is null");
+        CheckUtil.checkNotNull(cmp, "heap constructor cmp is null");
         this.array = array;
         this.size = size;
         this.cmp = cmp;
@@ -223,12 +223,29 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
     public static <E extends Comparable<E>> MyHeap<E> create(E[] array, boolean minHeap) {
         Object[] newArray = new Object[array.length];
         System.arraycopy(array, 0, newArray, 0, array.length);
-        MyHeap<E> newHeap = new MyHeap<>(newArray, array.length, minHeap);
+        MyHeap<E> newHeap = new MyHeap<E>(newArray, array.length, minHeap ? Comparator.naturalOrder() : Comparator.reverseOrder());
         // adjust each parent node. from bottom to top.
         for (int i = newHeap.size() / 2; i >= 0; i--) {
             newHeap.percolateDown(i);
         }
         return newHeap;
+    }
+
+    public static <E extends Comparable<E>> void sort(E[] array, Comparator<E> cmp) {
+        MyHeap<E> heap = new MyHeap<E>(array, array.length, (o1, o2) -> {
+            // reverse cmp, for stack
+            return cmp.compare(o2, o1);
+        });
+        for (int i = heap.size() / 2; i >= 0; i --) {
+            heap.percolateDown(i);
+        }
+
+        int size = heap.size;
+        for (int idx = size - 1; idx >= 0; idx--) {
+            // array is the same with heap.array. memory-shared, avoid mem-copy. but be care of here.
+            // now heap's order is opposite with before. use ad a stack.
+            heap.array[idx] = heap.pop();
+        }
     }
 
     public static void main(String[] args) {
@@ -242,7 +259,7 @@ public class MyHeap<E extends Comparable<E>> implements IMyHeap<E> {
         }
 
         System.out.println("maxHeap");
-        IMyHeap<Integer> maxHeap = new MyHeap<>(false);
+        IMyHeap<Integer> maxHeap = new MyHeap<Integer>(Comparator.reverseOrder());
         for (int i = 1; i < 10; i++) {
             maxHeap.insert(10 - i);
         }
