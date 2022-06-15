@@ -9,11 +9,17 @@
 
     <mirrors>
         <mirror>
-            <id>maven-public</id>
-            <name>public</name>
-            <url>http://152.136.159.92:8081/repository/maven-public/</url>
-            <mirrorOf>*</mirrorOf>
+            <id>aliyunmaven</id>
+            <mirrorOf>central</mirrorOf>
+            <name>aliyun maven</name>
+            <url>https://maven.aliyun.com/repository/public </url>
         </mirror>
+<!--        <mirror>-->
+<!--            <id>maven-public</id>-->
+<!--            <name>public</name>-->
+<!--            <url>http://152.136.159.92:8081/repository/maven-public/</url>-->
+<!--            <mirrorOf>*</mirrorOf>-->
+<!--        </mirror>-->
     </mirrors>
 
 
