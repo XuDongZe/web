@@ -110,7 +110,11 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         for (E e : this) {
-            builder.append(e).append(",");
+            builder.append(e).append(", ");
+        }
+        if (builder.charAt(builder.length() - 1) == ' ') {
+            builder.deleteCharAt(builder.length() - 1);
+            builder.deleteCharAt(builder.length() - 1);
         }
         builder.append("]");
         return builder.toString();
