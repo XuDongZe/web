@@ -65,41 +65,6 @@ public class MyArrayList<E> implements IMyList<E> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    @Override
-    public boolean contains(E e) {
-        for (E value : this) {
-            if (Objects.equals(value, e)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void addFirst(E e) {
-        add(0, e);
-    }
-
-    @Override
-    public void addLast(E e) {
-        add(size, e);
-    }
-
-    @Override
-    public E removeFirst() {
-        return remove(0);
-    }
-
-    @Override
-    public E removeLast() {
-        return remove(size - 1);
-    }
-
-    @Override
     public Iterator<E> iterator() {
         return new MyArrayListIterator(this);
     }

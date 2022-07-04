@@ -60,33 +60,8 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    @Override
     public Iterator<E> iterator() {
         return new MyDoubleLinkedListIterator<>(this);
-    }
-
-    @Override
-    public void addFirst(E e) {
-        insertAfter(head, e);
-    }
-
-    @Override
-    public void addLast(E e) {
-        insertBefore(tail, e);
-    }
-
-    @Override
-    public E removeFirst() {
-        return remove(head.next);
-    }
-
-    @Override
-    public E removeLast() {
-        return remove(tail.prev);
     }
 
     /**
@@ -95,7 +70,7 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
      * @return
      */
     private Node<E> getNode(int idx) {
-        if (idx < -1 || idx > size) {
+        if (idx < 0 || idx >= size) {
             throw new RuntimeException("idx is not valid");
         }
 
@@ -231,18 +206,6 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
         q.next = np;
         nq.prev = p;
         p.next = nq;
-    }
-
-    @Override
-    public boolean contains(E e) {
-        Node<E> p = head.next;
-        while (p != tail) {
-            if ((e == null && p.element == null) || e.equals(p.element)) {
-                return true;
-            }
-            p = p.next;
-        }
-        return false;
     }
 
     public static void main(String[] args){

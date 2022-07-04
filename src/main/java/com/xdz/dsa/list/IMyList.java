@@ -1,5 +1,7 @@
 package com.xdz.dsa.list;
 
+import java.util.Iterator;
+
 /**
  * Description: 列表ADT<br/>
  * Author: dongze.xu<br/>
@@ -22,15 +24,6 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
      */
     void add(int idx, E e);
 
-    default void addAll(E[] array) {
-        if (array == null || array.length <= 0) {
-            return;
-        }
-        for (E e : array) {
-            addLast(e);
-        }
-    }
-
     /**
      * remove by idx
      */
@@ -44,12 +37,64 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
     /**
      * list is empty: no element in list. or size() == 0
      */
-    boolean isEmpty();
+    default boolean isEmpty() {
+        return size() == 0;
+    }
 
     /**
      * 是否包含指定元素
      */
-    boolean contains(E e);
+    default boolean contains(E e) {
+        Iterator<E> it = iterator();
+        while (it.hasNext()) {
+            E next = it.next();
+            if ((e == null && next == null) || (e != null && e.equals(next))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    default void addAll(E[] array) {
+        if (array == null || array.length <= 0) {
+            return;
+        }
+        for (E e : array) {
+            addLast(e);
+        }
+    }
+
+    /**
+     * 在队头插入指定元素
+     */
+    @Override
+    default void addFirst(E e) {
+        add(0 ,e);
+    }
+
+    /**
+     * 在队尾插入指定元素
+     */
+    @Override
+    default void addLast(E e) {
+        add(size(), e);
+    }
+
+    /**
+     * 删除队头元素
+     */
+    @Override
+    default E removeFirst() {
+        return remove(0);
+    }
+
+    /**
+     * 删除队尾元素
+     */
+    @Override
+    default E removeLast() {
+        return remove(size() - 1);
+    }
 
     @Override
     default E getFirst() {

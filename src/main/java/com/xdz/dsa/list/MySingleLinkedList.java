@@ -40,17 +40,15 @@ public class MySingleLinkedList<E> implements IMyList<E> {
      */
     private Node<E> head;
     /**
-     * we hold that to insert at last
-     */
-    private Node<E> tail;
-    /**
      * we use it to hold the element count of list, so size() is O(1)
+     * also the next pos to insert.
+     * so add range check: [0, size]
+     * get/set range check: [0, size)
      */
     private int size;
 
     public MySingleLinkedList() {
         head = new Node<>();
-        head.next = tail = null;
         size = 0;
     }
 
@@ -58,24 +56,6 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     public E get(int idx) {
         Node<E> node = getNode(idx);
         return (E) node.element;
-    }
-
-    private Node<E> getNode(int idx) {
-        if (idx < -1 || idx >= size) {
-            throw new RuntimeException("get from list, index is illegal: " + idx);
-        }
-
-        int i = -1;
-        Node<E> node = head;
-        while (i < idx) {
-            // loop for idx count
-            node = node.next;
-            i++;
-        }
-        // i: 0 => idx
-        // node: head.next => node
-        // so node is list[idx] if we define list[head] is -1.
-        return node;
     }
 
     @Override
@@ -86,18 +66,12 @@ public class MySingleLinkedList<E> implements IMyList<E> {
 
     @Override
     public void add(int idx, E e) {
-        Node<E> p = getNode(idx - 1);
-        insertAfter(p, e);
-    }
-
-    public void add(E e) {
-        insertAfter(tail, e);
+        insertAfter(getNode(idx - 1), e);
     }
 
     @Override
     public E remove(int idx) {
-        Node<E> p = getNode(idx - 1);
-        return removeByPrev(p);
+        return removeByPrev(getNode(idx - 1));
     }
 
     @Override
@@ -106,53 +80,16 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     }
 
     @Override
-    public boolean isEmpty() {
-        return size() == 0;
-    }
-
-    @Override
-    public boolean contains(E e) {
-        for (E value : this) {
-            if (Objects.equals(value, e)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
     public Iterator<E> iterator() {
         return new MySingleLinkedListIterator(this.head);
     }
 
-    @Override
-    public void addFirst(E element) {
-        insertAfter(head, element);
-    }
-
-    @Override
-    public void addLast(E element) {
-        insertAfter(tail, element);
-    }
-
-    @Override
-    public E removeFirst() {
-        return removeByPrev(head);
-    }
-
     /**
-     * 移除最后一个元素 O(n)
+     * 在node节点前插入新节点.
+     * 单向列表不推荐使用这种。
      */
-    @Override
-    public E removeLast() {
-        Node<E> p = prev(tail);
-        return removeByPrev(p);
-    }
-
-    /**
-     * 在node节点前插入新节点
-     */
-    public void insertBefore(Node<E> node, E element) {
+    @Deprecated
+    private void insertBefore(Node<E> node, E element) {
         Node<E> p = prev(node);
         if (p == null) {
             throw new RuntimeException("node is not in list");
@@ -161,23 +98,38 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     }
 
     /**
-     * 删除node节点
+     * idx == -1, head
+     * idx == 0, head.next
      */
-    public E remove(Node<E> node) {
-        Node<E> p = prev(node);
-        if (p == null) {
-            throw new RuntimeException("node is not in list");
+    private Node<E> getNode(int idx) {
+        if (idx == -1) {
+            return head;
         }
-        return removeByPrev(p);
+
+        if (idx < 0 || idx >= size) {
+            throw new RuntimeException("get from list, index is illegal: " + idx);
+        }
+
+        int i = -1;
+        Node<E> node = head;
+        while (i < idx) {
+            // loop for idx count
+            node = node.next;
+            i++;
+        }
+        // i: -1 => idx
+        // node: head => node
+        // so node is list[idx] if we define list[head] is -1.
+        return node;
     }
 
+    /**
+     * prev.next = node
+     */
     private E removeByPrev(Node<E> prev) {
         Node<E> node = prev.next;
         prev.next = prev.next.next;
         size--;
-        if (prev.next == null) {
-            tail = prev;
-        }
         return (E) node.element;
     }
 
@@ -189,9 +141,18 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         newNode.next = node.next;
         node.next = newNode;
         size++;
-        if (node == tail) {
-            tail = newNode;
+    }
+
+    /**
+     * 删除node节点
+     */
+    @Deprecated
+    private E remove(Node<E> node) {
+        Node<E> p = prev(node);
+        if (p == null) {
+            throw new RuntimeException("node is not in list");
         }
+        return removeByPrev(p);
     }
 
     private Node<E> prev(Node<E> node) {
@@ -297,17 +258,8 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         // remove
         list.removeFirst();
         list.removeFirst();
-        list.removeFirst();
         list.removeLast();
         list.removeLast();
-        list.removeLast();
-
-        // inner func
-        list.add(1);
-        Node node = list.getNode(0);
-        list.insertAfter(node, 2);
-        list.insertBefore(node, 3);
-        list.remove(node);
 
         Iterator<Integer> it = list.iterator();
         while (it.hasNext()) {
