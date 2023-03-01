@@ -9,10 +9,16 @@
 
     <mirrors>
         <mirror>
+            <id>tencentmaven</id>
+            <mirrorOf>*</mirrorOf>
+            <name>tencent maven</name>
+            <url>https://mirrors.tencentyun.com/ubuntu</url>
+        </mirror>
+        <mirror>
             <id>aliyunmaven</id>
             <mirrorOf>central</mirrorOf>
             <name>aliyun maven</name>
-            <url>https://maven.aliyun.com/repository/public </url>
+            <url>https://maven.aliyun.com/repository/public</url>
         </mirror>
 <!--        <mirror>-->
 <!--            <id>maven-public</id>-->

@@ -6,7 +6,7 @@
 <Configuration monitorInterval="30">
     <Properties>
         <!-- 配置日志文件输出目录 -->
-        <Property name="LOG_HOME">E:\\data\\log4j2</Property>
+        <Property name="LOG_HOME">D:\\data\\log4j2</Property>
     </Properties>
     <Appenders>
         <!-- Console节点 配置控制台日志输出：

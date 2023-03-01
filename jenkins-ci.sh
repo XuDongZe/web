@@ -1,7 +1,7 @@
-#cd /opt
-#rm -rf web
-#git clone -b master https://github.com.cnpmjs.org/XuDongZe/web.git/
-#cd web
+cd /opt
+rm -rf web
+git clone -b main https://github.com./XuDongZe/web.git/
+cd web
 
 docker build . -t xudongze/tomcat-springmvc-web:latest
 docker container stop myweb && docker container rm myweb
