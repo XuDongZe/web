@@ -1,7 +1,6 @@
 package com.xdz.web.interceptor;
 
 import com.xdz.web.model.BaseResponse;
-import lombok.extern.apachecommons.CommonsLog;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;

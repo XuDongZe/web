@@ -9,9 +9,6 @@ import com.xdz.dsa.list.IMyList;
 import com.xdz.dsa.list.MyArrayList;
 import com.xdz.dsa.stack.IMyStack;
 import com.xdz.dsa.stack.MyArrayStack;
-import javafx.scene.shape.Arc;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 

@@ -1,6 +1,5 @@
 package com.xdz.util;
 
-import lombok.SneakyThrows;
 import lombok.extern.apachecommons.CommonsLog;
 
 import java.io.Closeable;

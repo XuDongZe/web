@@ -1,14 +1,12 @@
 package com.xdz.nio;
 
 import com.xdz.util.ResourceUtil;
-import org.springframework.scheduling.annotation.Async;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.channels.SocketChannel;
 import java.nio.charset.StandardCharsets;
 
 public class AioTimeClient {

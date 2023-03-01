@@ -1,7 +1,6 @@
 package com.xdz.dsa.list;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * Description: implement a list using array.

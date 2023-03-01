@@ -1,10 +1,8 @@
 package com.xdz.nio;
 
 import com.xdz.util.ResourceUtil;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.apachecommons.CommonsLog;
-import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.net.ServerSocket;

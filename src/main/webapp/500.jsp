@@ -1,3 +1,6 @@
+<%@ page import="org.slf4j.Logger" %>
+<%@ page import="java.io.PrintStream" %>
+<%@ page import="java.io.PrintWriter" %>
 <%--
   Created by IntelliJ IDEA.
   User: happyelements
@@ -10,8 +13,8 @@
 <pre>
 <%
     Throwable t = (java.lang.Throwable)request.getAttribute("javax.servlet.error.exception");
-    if(t != null) {
-        org.apache.log4j.Logger.getLogger("com.happyelements.animal.antiaddiction").error("500 error：" + t.getMessage(), t);
+    if (t != null) {
+        t.printStackTrace(new PrintWriter(out));
     }
 %>
 </pre>

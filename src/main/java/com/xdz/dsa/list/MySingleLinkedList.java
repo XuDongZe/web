@@ -1,7 +1,6 @@
 package com.xdz.dsa.list;
 
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  * Description: 列表的单链表实现<br/>
