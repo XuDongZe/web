@@ -1,29 +1,29 @@
 version: "3"
 
 services: # 服务列表
-#  nginx:
-#    image: nginx:stable
-#    container_name: nginx
-#    ports:
-#      - "80:80"
-#    networks:
-#      - server-web
-#    volumes:
-#      - /var/lib/docker/volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+  nginx:
+    image: nginx:stable
+    container_name: nginx
+    ports:
+      - "80:80"
+    networks:
+      - server-web
+    volumes:
+      - /var/lib/docker/volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
 #      - /var/lib/docker/volumes/nginx/conf.d:/etc/nginx/conf.d:ro
-#      - /var/lib/docker/volumes/nginx/html:/usr/share/nginx/html:ro
-#    environment:
-#      - TZ=Asia/Shanghai
-#    restart: always
-#    depends_on:
-#      - web
+      - /var/lib/docker/volumes/nginx/html:/usr/share/nginx/html:ro
+    environment:
+      - TZ=Asia/Shanghai
+    restart: always
+    depends_on:
+      - web
 
   web:
     build: . # Dockerfile文件所在目录，用于构建镜像
 #    image: xudongze/tomcat-springmvc-web:latest
     container_name: web
-    ports:
-      - "8080:8010" # web容器构建时 tomcat监听8010端口，因此将主机的8080映射到容器的8010
+#    ports:
+#      - "8080:8010" # web容器构建时 tomcat监听8010端口，因此将主机的8080映射到容器的8010
     networks:
       - server-web
 #    volumes:
