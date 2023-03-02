@@ -1,27 +1,29 @@
 version: "3"
 
-services:
-  nginx:
-    image: nginx:stable
-    container_name: nginx
-    ports:
-      - "80:80"
-    networks:
-      - server-web
-    volumes:
-      - /var/lib/docker/volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - /var/lib/docker/volumes/nginx/conf.d:/etc/nginx/conf.d:ro
-      - /var/lib/docker/volumes/nginx/html:/usr/share/nginx/html:ro
-    environment:
-      - TZ=Asia/Shanghai
-    restart: always
-    depends_on:
-      - web
+services: # 服务列表
+#  nginx:
+#    image: nginx:stable
+#    container_name: nginx
+#    ports:
+#      - "80:80"
+#    networks:
+#      - server-web
+#    volumes:
+#      - /var/lib/docker/volumes/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+#      - /var/lib/docker/volumes/nginx/conf.d:/etc/nginx/conf.d:ro
+#      - /var/lib/docker/volumes/nginx/html:/usr/share/nginx/html:ro
+#    environment:
+#      - TZ=Asia/Shanghai
+#    restart: always
+#    depends_on:
+#      - web
 
   web:
-    build: .
-    image: xudongze/tomcat-springmvc-web:latest
+    build: . # Dockerfile文件所在目录，用于构建镜像
+#    image: xudongze/tomcat-springmvc-web:latest
     container_name: web
+    ports:
+      - "8080:8010" # web容器构建时 tomcat监听8010端口，因此将主机的8080映射到容器的8010
     networks:
       - server-web
     volumes:
@@ -31,7 +33,7 @@ services:
     restart: always
     depends_on:
       - mysql
-      - mongo
+#      - mongo
       - redis
 
   mysql:
@@ -45,7 +47,7 @@ services:
       - /var/lib/docker/volumes/mysql/conf:/etc/mysql/conf.d
       - /var/lib/docker/volumes/mysql/logs:/var/log/mysql
       - /var/lib/docker/volumes/mysql/data:/var/lib/mysql
-    environment:
+    environment: # 环境变量
       - MYSQL_ROOT_PASSWORD=root
       - MYSQL_USER=admin
       - MYSQL_PASSWORD=1234QWER!
@@ -53,21 +55,21 @@ services:
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
 
-  mongo:
-    image: mongo:5.0.3
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - server-web
-    volumes:
-      - /var/lib/docker/volumes/mongo/db:/data/db
-      - /var/lib/docker/volumes/mongo/log:/var/log/mongodb
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=admin
-      - MONGO_INITDB_ROOT_PASSWORD=1234QWER!
-      - TZ=Asia/Shanghai
-    restart: always
+#  mongo:
+#    image: mongo:5.0.3
+#    container_name: mongo
+#    ports:
+#      - "27017:27017"
+#    networks:
+#      - server-web
+#    volumes:
+#      - /var/lib/docker/volumes/mongo/db:/data/db
+#      - /var/lib/docker/volumes/mongo/log:/var/log/mongodb
+#    environment:
+#      - MONGO_INITDB_ROOT_USERNAME=admin
+#      - MONGO_INITDB_ROOT_PASSWORD=1234QWER!
+#      - TZ=Asia/Shanghai
+#    restart: always
 
   redis:
     image: redis:6.2.5
@@ -84,21 +86,21 @@ services:
       - TZ=Asia/Shanghai
     restart: always
 
-  rabbitMQ:
-    image: rabbitmq:management
-    container_name: rabbitMQ
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    networks:
-      - server-web
-    volumes:
-      - /var/lib/docker/volumes/rabbitMQ/data:/var/lib/rabbitmq
-    environment:
-      - RABBITMQ_DEFAULT_USER=admin
-      - RABBITMQ_DEFAULT_PASS=1234QWER!
-      - TZ=Asia/Shanghai
-    restart: always
+#  rabbitMQ:
+#    image: rabbitmq:management
+#    container_name: rabbitMQ
+#    ports:
+#      - "15672:15672"
+#      - "5672:5672"
+#    networks:
+#      - server-web
+#    volumes:
+#      - /var/lib/docker/volumes/rabbitMQ/data:/var/lib/rabbitmq
+#    environment:
+#      - RABBITMQ_DEFAULT_USER=admin
+#      - RABBITMQ_DEFAULT_PASS=1234QWER!
+#      - TZ=Asia/Shanghai
+#    restart: always
 
 networks:
   server-web:
