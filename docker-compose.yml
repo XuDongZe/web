@@ -26,7 +26,7 @@ services: # 服务列表
       - "8080:8010" # web容器构建时 tomcat监听8010端口，因此将主机的8080映射到容器的8010
     networks:
       - server-web
-    volumes:
+#    volumes:
 #      - /var/lib/docker/volumes/tomcat/webapps/:/usr/local/tomcat/webapps/
     environment:
       - TZ=Asia/Shanghai
