@@ -45,6 +45,23 @@ public class MathUtil {
         }
     }
 
+    public static int minPowerOfTwo(int n) {
+        if (n <= 0) {
+            return 0;
+        }
+        return n & (-n);
+    }
+
+    /**
+     * n is power of two or not.
+     */
+    public static boolean isPowerOfTwo(int n) {
+        if (n < 0) {
+            return false;
+        }
+        return ((n - 1) & n) == 0;
+    }
+
     public static void main(String[] args) {
         boolean result = isPrime(1);
         result = isPrime(2);
@@ -53,5 +70,9 @@ public class MathUtil {
         int next = nextPrime(100);
         next = nextPrime(next + 1);
         next = nextPrime(next + 1);
+        result = isPowerOfTwo(17);
+        result = isPowerOfTwo(4);
+        next = minPowerOfTwo(17);
+        next = minPowerOfTwo(4);
     }
 }
