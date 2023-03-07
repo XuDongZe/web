@@ -8,27 +8,7 @@ import java.util.Iterator;
  * Date: 2022/5/13 15:21<br/>
  * Version: 1.0<br/>
  */
-public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
-    /**
-     * set by idx
-     */
-    E get(int idx);
-
-    /**
-     * get by idx
-     */
-    void set(int idx, E e);
-
-    /**
-     * add by idx
-     */
-    void add(int idx, E e);
-
-    /**
-     * remove by idx
-     */
-    E remove(int idx);
-
+public interface IMyList<E> extends Iterable<E>, IMyRandomAccess<E>, IMyDeque<E> {
     /**
      * list's element count
      */
@@ -104,6 +84,20 @@ public interface IMyList<E> extends Iterable<E>, IMyDeque<E> {
     @Override
     default E getLast() {
         return get(size() - 1);
+    }
+
+    default void checkAccess(int idx) {
+        // range [0, size()-1]
+        if (idx < 0 || idx >= size()) {
+            throw new ArrayIndexOutOfBoundsException(String.format("access valid idx: %s, for range[0, %s]", idx, size() - 1));
+        }
+    }
+
+    default void checkInsert(int idx) {
+        // range [0, size()]
+        if (idx < 0 || idx > size()) {
+            throw new ArrayIndexOutOfBoundsException(String.format("access valid idx: %s, for range[0, %s]", idx, size()));
+        }
     }
 
     default String string() {

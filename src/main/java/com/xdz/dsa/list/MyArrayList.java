@@ -1,5 +1,7 @@
 package com.xdz.dsa.list;
 
+import com.xdz.dsa.exception.MyArrayEmptyException;
+
 import java.util.Iterator;
 
 /**
@@ -28,17 +30,21 @@ public class MyArrayList<E> implements IMyList<E> {
     @SuppressWarnings("unchecked")
     @Override
     public E get(int idx) {
+        checkAccess(idx);
         return (E) array[idx];
     }
 
     @Override
     public void set(int idx, E value) {
+        checkAccess(idx);
         array[idx] = value;
     }
 
     @Override
     public void add(int index, E value) {
+        checkInsert(index);
         ensureCapacity(size + 1);
+        // [index,...] => [index+1,...]
         for (int i = size - 1; i >= index; i--) {
             array[i + 1] = array[i];
         }
@@ -50,9 +56,11 @@ public class MyArrayList<E> implements IMyList<E> {
     @Override
     public E remove(int index) {
         E e = (E) array[index];
+        // [index+1,...] => [index,...]
         for (int i = index + 1; i < size; i++) {
             array[i - 1] = array[i];
         }
+        // help gc
         array[size - 1] = null;
         size--;
         return e;
@@ -65,11 +73,11 @@ public class MyArrayList<E> implements IMyList<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new MyArrayListIterator(this);
+        return new MyArrayListIterator();
     }
 
     public Iterator<E> reverseIterator() {
-        return new MySingleLinkedListReverseIterator<>(this);
+        return new MyArrayListReverseIterator();
     }
 
     private void ensureCapacity(int newCapacity) {
@@ -77,20 +85,18 @@ public class MyArrayList<E> implements IMyList<E> {
             return;
         }
 
+        newCapacity = Math.max(2 * capacity, newCapacity);
+
         Object[] newArray = new Object[newCapacity];
-        for (int i = 0; i < size; i++) {
-            newArray[i] = array[i];
-        }
+        System.arraycopy(array, 0, newArray, 0, size);
         array = newArray;
+        capacity = newCapacity;
     }
 
     private class MyArrayListIterator implements Iterator<E> {
-
         private int pos = 0;
-        private MyArrayList<E> list;
 
-        public MyArrayListIterator(MyArrayList<E> list) {
-            this.list = list;
+        public MyArrayListIterator() {
         }
 
         @Override
@@ -100,18 +106,18 @@ public class MyArrayList<E> implements IMyList<E> {
 
         @Override
         public E next() {
-            return list.get(pos++);
+            return get(pos++);
         }
     }
 
-    private static class MySingleLinkedListReverseIterator<E> implements Iterator<E> {
-
+    private class MyArrayListReverseIterator implements Iterator<E> {
         private int pos;
-        private MyArrayList<E> list;
 
-        public MySingleLinkedListReverseIterator(MyArrayList<E> list) {
-            this.list = list;
-            this.pos = list.size - 1;
+        public MyArrayListReverseIterator() {
+            if (isEmpty()) {
+                throw new MyArrayEmptyException();
+            }
+            this.pos = size() - 1;
         }
 
         @Override
@@ -121,7 +127,7 @@ public class MyArrayList<E> implements IMyList<E> {
 
         @Override
         public E next() {
-            return list.get(pos--);
+            return get(pos--);
         }
     }
 
