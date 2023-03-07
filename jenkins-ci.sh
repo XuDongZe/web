@@ -1,15 +1,9 @@
-#cd /opt
-#rm -rf web
-#git clone -b main https://github.com./XuDongZe/web.git/
-#cd web
+docker build . -t xudongze/tomcat-springmvc-web:latest && \
+docker container stop web
+docker container rm web && \
 
-# add nginx.conf
-rm -f /var/lib/docker/volumes/nginx/nginx.conf
-cp nginx.conf /var/lib/docker/volumes/nginx/nginx.conf
-# docker-compose 启动
-docker-compose down
-docker-compose up -d
-
-#docker build . -t xudongze/tomcat-springmvc-web:latest
-#docker container stop myweb && docker container rm myweb
-#docker run -d --name myweb --network server-web xudongze/tomcat-springmvc-web:latest
+docker run -d \
+--name web \
+--port "8010:8010" \
+--network server-web \
+xudongze/tomcat-springmvc-web:latest
