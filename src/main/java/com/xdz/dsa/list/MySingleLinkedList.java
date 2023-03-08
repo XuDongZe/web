@@ -37,7 +37,16 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     /**
      * we use it to hold the list
      */
-    private Node<E> head;
+    private final Node<E> head;
+
+    /**
+     * we use it to point to tail of list.
+     * support O(1) for addLast() getLast().
+     * <p>
+     * init null. insert new one to last, change pointer
+     */
+    private Node<E> tail;
+
     /**
      * we use it to hold the element count of list, so size() is O(1)
      * also the next pos to insert.
@@ -49,22 +58,29 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     public MySingleLinkedList() {
         head = new Node<>();
         size = 0;
+        head.next = tail = null;
     }
 
     @Override
     public E get(int idx) {
+        checkAccess(idx);
+
         Node<E> node = getNode(idx);
         return (E) node.element;
     }
 
     @Override
     public void set(int idx, E e) {
+        checkAccess(idx);
+
         Node<E> node = getNode(idx);
         node.element = e;
     }
 
     @Override
     public void add(int idx, E e) {
+        checkInsert(idx);
+
         insertAfter(getNode(idx - 1), e);
     }
 
@@ -80,7 +96,55 @@ public class MySingleLinkedList<E> implements IMyList<E> {
 
     @Override
     public Iterator<E> iterator() {
-        return new MySingleLinkedListIterator(this.head);
+        return new MySingleLinkedListIterator();
+    }
+
+    @Override
+    public void addLast(E e) {
+        if (tail == null) {
+            head.next = tail = new Node<>(e);
+        } else {
+            insertAfter(tail, e);
+        }
+    }
+
+    @Override
+    public E getLast() {
+        return tail == null ? null : (E) tail.element;
+    }
+
+    /**
+     * idx == -1, head
+     * idx == 0, head.next
+     */
+    private Node<E> getNode(int idx) {
+        if (idx == -1) {
+            return head;
+        }
+
+        if (idx < 0 || idx >= size) {
+            throw new RuntimeException("get from list, index is illegal: " + idx);
+        }
+
+        Node<E> node = head.next;
+        for (int i = 0; i < idx; i++) {
+            node = node.next;
+        }
+        return node;
+    }
+
+    /**
+     * prev.next = node
+     */
+    private E removeByPrev(Node<E> prev) {
+        Node<E> node = prev.next;
+        prev.next = prev.next.next;
+        size--;
+
+        if (node == tail) {
+            tail = null;
+        }
+        return (E) node.element;
     }
 
     /**
@@ -97,42 +161,6 @@ public class MySingleLinkedList<E> implements IMyList<E> {
     }
 
     /**
-     * idx == -1, head
-     * idx == 0, head.next
-     */
-    private Node<E> getNode(int idx) {
-        if (idx == -1) {
-            return head;
-        }
-
-        if (idx < 0 || idx >= size) {
-            throw new RuntimeException("get from list, index is illegal: " + idx);
-        }
-
-        int i = -1;
-        Node<E> node = head;
-        while (i < idx) {
-            // loop for idx count
-            node = node.next;
-            i++;
-        }
-        // i: -1 => idx
-        // node: head => node
-        // so node is list[idx] if we define list[head] is -1.
-        return node;
-    }
-
-    /**
-     * prev.next = node
-     */
-    private E removeByPrev(Node<E> prev) {
-        Node<E> node = prev.next;
-        prev.next = prev.next.next;
-        size--;
-        return (E) node.element;
-    }
-
-    /**
      * 在node节点后插入新节点
      */
     private void insertAfter(Node<E> node, E element) {
@@ -140,6 +168,10 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         newNode.next = node.next;
         node.next = newNode;
         size++;
+
+        if (node == tail) {
+            tail = newNode;
+        }
     }
 
     /**
@@ -167,14 +199,14 @@ public class MySingleLinkedList<E> implements IMyList<E> {
         return node == null ? null : node.next;
     }
 
-    private static class MySingleLinkedListIterator<E> implements Iterator<E> {
+    private class MySingleLinkedListIterator implements Iterator<E> {
 
         /**
          * 当前节点指针, 初始化为-1, 即head节点
          */
         private Node<E> p;
 
-        public MySingleLinkedListIterator(Node<E> head) {
+        public MySingleLinkedListIterator() {
             if (head == null) {
                 throw new RuntimeException("head pointer is null");
             }
