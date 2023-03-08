@@ -31,11 +31,13 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
 
     @Override
     public E get(int idx) {
+        checkAccess(idx);
         return (E) getNode(idx).element;
     }
 
     @Override
     public void set(int idx, E e) {
+        checkAccess(idx);
         Node<E> node = getNode(idx);
         node.element = e;
     }
@@ -46,11 +48,13 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
      */
     @Override
     public void add(int idx, E e) {
+        checkInsert(idx);
         insertBefore(getNode(idx), e);
     }
 
     @Override
     public E remove(int idx) {
+        checkAccess(idx);
         return remove(getNode(idx));
     }
 
@@ -70,10 +74,11 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
      * @return
      */
     private Node<E> getNode(int idx) {
-        if (idx < 0 || idx >= size) {
+        if (idx < -1 || idx > size) {
             throw new RuntimeException("idx is not valid");
         }
 
+        // tailIdx是idx的opponent idx, idx begin from tail: tail is -1.
         int tailIdx = size - 1 - idx;
         if (tailIdx < idx) {
             return getNodeFromTail(tailIdx);
@@ -127,6 +132,7 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
         E e = (E) node.element;
         node.prev.next = node.next;
         node.next.prev = node.prev;
+        node.next = node.prev = null;
         size --;
         return e;
     }
@@ -135,17 +141,36 @@ public class MyDoubleLinkedList<E> implements IMyList<E>, IMySelfAdjustList<E> {
     public void addAdjust(E e, Comparator<E> cmp) {
         // find the first node.el >= e, then insertBefore(node)
         Node node = head.next;
-        while (node != tail) {
-            // > for stability
-            if (cmp.compare((E) node.element, e) > 0) {
-                insertBefore(node, e);
-                return;
-            }
+        while (node != tail && cmp.compare((E) node.element, e) <= 0) {
             node = node.next;
         }
-        // if e is the max one, then insertBefore tail
+        // now node == tail: all node.element <= e; or node > e.
+        insertBefore(node, e);
+    }
+
+    @Override
+    public void addLast(E e) {
         insertBefore(tail, e);
     }
+
+    @Override
+    public E removeLast() {
+        if (isEmpty()) {
+            throw new RuntimeException("empty list");
+        }
+        return remove(prev(tail));
+    }
+
+    @Override
+    public E getLast() {
+        if (isEmpty()) {
+            throw new RuntimeException("empty list");
+        }
+        Node<E> last = prev(tail);
+        return (E) last.element;
+    }
+
+
 
     private static class Node<E> {
         private Object element;

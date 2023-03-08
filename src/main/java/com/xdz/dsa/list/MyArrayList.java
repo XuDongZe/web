@@ -55,6 +55,7 @@ public class MyArrayList<E> implements IMyList<E> {
     @SuppressWarnings("unchecked")
     @Override
     public E remove(int index) {
+        checkAccess(index);
         E e = (E) array[index];
         // [index+1,...] => [index,...]
         for (int i = index + 1; i < size; i++) {

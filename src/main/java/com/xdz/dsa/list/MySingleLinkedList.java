@@ -86,6 +86,7 @@ public class MySingleLinkedList<E> implements IMyList<E> {
 
     @Override
     public E remove(int idx) {
+        checkAccess(idx);
         return removeByPrev(getNode(idx - 1));
     }
 
@@ -118,16 +119,12 @@ public class MySingleLinkedList<E> implements IMyList<E> {
      * idx == 0, head.next
      */
     private Node<E> getNode(int idx) {
-        if (idx == -1) {
-            return head;
-        }
-
-        if (idx < 0 || idx >= size) {
+        if (idx < -1 || idx >= size) {
             throw new RuntimeException("get from list, index is illegal: " + idx);
         }
 
-        Node<E> node = head.next;
-        for (int i = 0; i < idx; i++) {
+        Node<E> node = head;
+        for (int i = -1; i < idx; i++) {
             node = node.next;
         }
         return node;
