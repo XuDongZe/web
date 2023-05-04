@@ -170,5 +170,12 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--gpt-->
+        <dependency>
+            <groupId>com.unfbx</groupId>
+            <artifactId>chatgpt-java</artifactId>
+            <version>1.0.12</version>
+        </dependency>
     </dependencies>
 </project>
