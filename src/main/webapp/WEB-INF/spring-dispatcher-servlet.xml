@@ -40,12 +40,13 @@
         <!--设置不使用默认的消息转换器-->
         <mvc:message-converters register-defaults="true">
             <!--配置spring的转换器-->
-<!--            <bean class="org.springframework.http.converter.StringHttpMessageConverter" />-->
-            <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter" />
-            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
-            <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter" />
+            <!--            <bean class="org.springframework.http.converter.StringHttpMessageConverter" />-->
+            <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+            <bean class="org.springframework.http.converter.BufferedImageHttpMessageConverter"/>
             <!--配置fastjson中实现HttpMessageConverter接口的转换器-->
-            <bean id="fastJsonHttpMessageConverter" class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4" >
+            <bean id="fastJsonHttpMessageConverter"
+                  class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter4">
                 <!--加入支持的媒体类型，返回contentType-->
                 <property name="supportedMediaTypes">
                     <list>
@@ -59,7 +60,14 @@
     </mvc:annotation-driven>
 
     <!--全局返回处理-->
-    <bean class="com.xdz.web.interceptor.GlobalResponseHandler" />
+    <bean class="com.xdz.web.interceptor.GlobalResponseHandler"/>
     <!--全局异常处理-->
     <bean class="com.xdz.web.interceptor.GlobalExceptionHandler"></bean>
+
+    <!--    静态资源处理-->
+    <mvc:resources location="/img/" mapping="/img/**"/>
+    <mvc:resources location="/js/" mapping="/js/**"/>
+    <mvc:resources location="/css/" mapping="/css/**"/>
+    <mvc:resources location="/html/" mapping="/html/**"/>
+
 </beans>

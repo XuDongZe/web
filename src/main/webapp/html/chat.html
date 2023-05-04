@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+<!--    <title>ChatGPT Demo</title>-->
+    <style>
+        /* CSS 样式 */
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 20px;
+        }
+        #chat-box {
+            height: 400px;
+            overflow-y: scroll;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        #input-box {
+            width: 100%;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+<!--<h1>ChatGPT Demo</h1>-->
+<div id="chat-box"></div>
+<input type="text" id="input-box" placeholder="Type your message here...">
+<button id="send-btn">Send</button>
+
+<!-- JavaScript 代码 -->
+<script>
+    function generateUUID() {
+        let d = new Date().getTime();
+        let uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+            let r = (d + Math.random() * 16) % 16 | 0;
+            d = Math.floor(d / 16);
+            return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        return uuid;
+    }
+
+    const chatBox = document.querySelector('#chat-box');
+    const inputBox = document.querySelector('#input-box');
+    const sendBtn = document.querySelector('#send-btn');
+
+    let chatMsgDiv;
+
+    function addMessage(msg, isBot, newLine) {
+        if (chatMsgDiv == null) {
+            newLine = true;
+        }
+        if (newLine) {
+            chatMsgDiv = document.createElement('div');
+        }
+        chatMsgDiv.classList.add('chat-msg');
+        if (isBot) {
+            chatMsgDiv.classList.add('bot-msg');
+        } else {
+            chatMsgDiv.classList.add('user-msg');
+        }
+        if (newLine) {
+            chatMsgDiv.textContent = msg;
+            chatBox.appendChild(chatMsgDiv);
+        } else {
+            chatMsgDiv.textContent += msg;
+        }
+    }
+
+    function send() {
+        // echo
+        const msg = inputBox.value;
+        if (msg.trim() === '') {
+            return;
+        }
+        addMessage('You:' + msg, false, true);
+        inputBox.value = '';
+
+        // 每次都重新定义一个event source
+        const eventSourceId = generateUUID();
+        const source = new EventSource('http://localhost:8080/web/sse/subscribe?id=' + eventSourceId);
+        source.onmessage = (event) => {
+            let message = event.data;
+            message = message.trim().replace(/^"|"$/g, '');  // 去除首尾双引号
+            addMessage(message, true, false);
+        };
+        source.onopen = (event) => {
+            addMessage(" ", true, true);
+        };
+
+        const xhr = new XMLHttpRequest();
+        const url = 'http://localhost:8080/web/sse/chat?id=' + eventSourceId + '&input=' + msg;
+        xhr.open('GET', url);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                } else {
+                    console.error('Error occurred: ' + xhr.status);
+                }
+            }
+        };
+        xhr.send();
+    }
+
+    sendBtn.addEventListener('click', send);
+    inputBox.addEventListener('keydown', (e) => {
+        if (e.keyCode === 13) {
+            send();
+        }
+    });
+</script>
+</body>
+</html>
