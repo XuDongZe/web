@@ -17,10 +17,13 @@ public abstract class MyAbstractArraySort<E extends Comparable<E>> implements IM
     public void sort(E[] array, int start, int end, Comparator<E> cmp) {
         CheckUtil.checkNotNull(array, "sort.array");
         CheckUtil.checkNotNull(cmp, "sort.cmp");
+
+        assert end >= start;
+        // element amount is just 1 or 0. no need to sort.
         if (end - start <= 1) {
-            // element amount is just 1 or 0. no need to sort.
             return;
         }
+
         doSort(array, start, end, cmp);
     }
 

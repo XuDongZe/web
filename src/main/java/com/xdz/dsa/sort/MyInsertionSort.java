@@ -72,6 +72,78 @@ public class MyInsertionSort<E extends Comparable<E>> extends MyAbstractArraySor
         }
     }
 
+    private void __sort(E[] array, int start, int end, Comparator<E> cmp) {
+        for (int i = start + 1; i < end; i++) {
+            // place a[i] to right position
+            for (int j = i; j > 0 && less(array[j], array[j - 1], cmp); j--) {
+                exch(array, j, j - 1);
+            }
+            assert isSorted(array, start, i);
+        }
+        assert isSorted(array, start, end);
+    }
+
+    /**
+     * an optimized version of insertion sort (with half exchanges and a sentinel).
+     */
+    private void __sort_x(E[] array, int start, int end, Comparator<E> cmp) {
+        // put the smallest element at [0], serve as sentinel
+        int exchanges = 0;
+        for (int i = end - 1; i > start; i --) {
+            if (less(array[i], array[i - 1], cmp)) {
+                exch(array, i, i - 1);
+                exchanges ++;
+            }
+        }
+        // and check sorted already
+        if (exchanges == 0) {
+            return;
+        }
+
+        // insertion sort with half-exchange, now array[0] is the smallest
+        for (int i = 2; i < end; i ++) {
+            E v = array[i];
+            int j = i;
+            while (less(array[j], array[j - 1])) {
+                array[j] = array[j - 1];
+                j = j - 1;
+            }
+            array[j] = v;
+        }
+    }
+
+    private void __sort_binary_search(E[] array, int start, int end, Comparator<E> cmp) {
+        for (int i = start + 1; i < end; i ++) {
+            // binary search to determine index j where to insert a[i]
+            E v = array[i];
+            int lo = 0, hi = i;
+            while (lo < hi) {
+                int mid = lo + (hi - lo) >> 2;
+                if (less(v, array[mid], cmp)) {
+                    hi = mid;
+                } else {
+                    lo = mid + 1;
+                }
+            }
+
+            // now lo >= hi
+            // if lo > hi, then at prev step.
+            // case 1: hi = mid, lo > hi, that's say lo(old) > mid(old), impossible
+            // case 2: lo = mid + 1, lo > hi, that's say mid(old) + 1 > hi(old) => mid(old) >= hi(old),
+            // at the least case: mid(old) == hi(old) => low(old) == hi(old), impossible
+            // so lo > hi, impossible. so lo == hi.
+
+            // now lo == hi. so index j is lo (or high). let's inset a[i] to index lo
+            for (int j = i; j > lo; j --) {
+                array[j] = array[j - 1];
+            }
+            array[lo] = v;
+
+            assert isSorted(array, start, i, cmp);
+        }
+        assert isSorted(array, start, end, cmp);
+    }
+
     public static void main(String[] args) {
         IMyArraySort<Integer> sort = new MyInsertionSort<>();
         test(sort);
