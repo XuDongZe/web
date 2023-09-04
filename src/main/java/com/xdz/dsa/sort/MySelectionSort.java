@@ -1,7 +1,5 @@
 package com.xdz.dsa.sort;
 
-import com.xdz.util.CollectionUtil;
-
 import java.util.Comparator;
 
 /**
@@ -13,7 +11,7 @@ import java.util.Comparator;
  * <pre>
  * like bubble-sort & selection-sort, use (n - 1) times sub-sort.
  * the core idea is, at each sub-sort, we pick the min/max element from the un-sorted part,
- * and put to the sorted-part's tail.
+ * and put to the sorted-part's tail (in array, we using a swap(array, i, min_idx) to implement this)
  * 
  * we use a i which means the sorted-part's element count to split the ordered & un-ordered part:
  * ordered:     array[0, i)
@@ -28,11 +26,19 @@ import java.util.Comparator;
  * like bubble-sort, we can not break from inner-loop earlier before we iterate all we need to cmp.
  * and if i < j && array[i] == array[j], (we base i and find a new j), we do not swap.
  *
+ * Array SelectionSort is not stability. consider this seq: [3B, 3A, 2, 1, 4]
+ * 1. select min value: 1, swap with 4A => [1, 3A, 2, 3B, 4]
+ * 2. select min value: 2, swap with 4B => [1, 2, 3A, 3B, 4]
+ * now 3A,3B order is diff with original. so stability is not guaranteed.
+ *
+ * about stability here is an intuitive idea: if swap(i, j), and for pairs(i, i..j), and pairs(j, i..j), we
+ * can't guarantee there stability.
+ *
  * Summary:
  * Complex:
  * best = worst = avg = O(n ^ 2)
  * Stability:
- * true
+ * false
  * </pre>
  */
 public class MySelectionSort<E extends Comparable<E>> extends MyAbstractArraySort<E> {
@@ -47,9 +53,11 @@ public class MySelectionSort<E extends Comparable<E>> extends MyAbstractArraySor
                 }
             }
             // now k is the min-value idx for comp's nature order.
-            CollectionUtil.swap(array, i, k);
+            exch(array, i, k);
             // now array[i] is sorted and sorted-part is array[start, i]
+            assert isSorted(array, start, i, cmp);
         }
+        assert isSorted(array, start, end, cmp);
     }
 
     public static void main(String[] args) {
