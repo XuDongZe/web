@@ -58,29 +58,34 @@ public class MyInsertionSort<E extends Comparable<E>> extends MyAbstractArraySor
     @Override
     public void doSort(E[] array, int start, int end, Comparator<E> cmp) {
         // i-th sub-sort
-        for (int i = start + 1; i <= end - 1; i++) {
-            E tmp = array[i];
-            // find the right position for tmp,
-            // j < i && array[j] > array[i], order is not meet. copy
-            int j = i - 1;
-            for (; j >= start && cmp.compare(array[j], tmp) > 0; j--) {
-                // array[j] step right 1, now array[j] is hole(un-used)
-                array[j + 1] = array[j];
-            }
-            // now j = -1 || array[j] < tmp || array[j] == tmp. so tmp is array[j]'s successor.
-            array[j + 1] = tmp;
-        }
+//        for (int i = start + 1; i <= end - 1; i++) {
+//            E tmp = array[i];
+//            // find the right position for tmp,
+//            // j < i && array[j] > array[i], order is not meet. copy
+//            int j = i - 1;
+//            for (; j >= start && cmp.compare(array[j], tmp) > 0; j--) {
+//                // array[j] step right 1, now array[j] is hole(un-used)
+//                array[j + 1] = array[j];
+//            }
+//            // now j = -1 || array[j] < tmp || array[j] == tmp. so tmp is array[j]'s successor.
+//            array[j + 1] = tmp;
+//        }
+
+        __sort(array, start, end, cmp);
     }
 
     private void __sort(E[] array, int start, int end, Comparator<E> cmp) {
-        for (int i = start + 1; i < end; i++) {
-            // place a[i] to right position
+        for (int i = start; i < end; i++) {
+            // array[start..i) is sorted
+            // place array[i] place right-position in range[start..i)
+            // bubble to find the right-position
             for (int j = i; j > 0 && less(array[j], array[j - 1], cmp); j--) {
                 exch(array, j, j - 1);
             }
-            assert isSorted(array, start, i);
+            // array[start..i] is sorted.
+            assert isSorted(array, start, i, cmp);
         }
-        assert isSorted(array, start, end);
+        assert isSorted(array, start, end, cmp);
     }
 
     /**
@@ -88,6 +93,7 @@ public class MyInsertionSort<E extends Comparable<E>> extends MyAbstractArraySor
      */
     private void __sort_x(E[] array, int start, int end, Comparator<E> cmp) {
         // put the smallest element at [0], serve as sentinel
+        // bubble a sentinel to [0]
         int exchanges = 0;
         for (int i = end - 1; i > start; i --) {
             if (less(array[i], array[i - 1], cmp)) {
@@ -104,7 +110,7 @@ public class MyInsertionSort<E extends Comparable<E>> extends MyAbstractArraySor
         for (int i = 2; i < end; i ++) {
             E v = array[i];
             int j = i;
-            while (less(array[j], array[j - 1])) {
+            while (less(array[j], array[j - 1], cmp)) {
                 array[j] = array[j - 1];
                 j = j - 1;
             }

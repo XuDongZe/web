@@ -33,18 +33,17 @@ import java.util.Comparator;
 public class MyBubbleSort<E extends Comparable<E>> extends MyAbstractArraySort<E> {
     @Override
     protected void doSort(E[] array, int start, int end, Comparator<E> cmp) {
-        sortBySwap(array, start, end, cmp);
-    }
-
-    private void sortBySwap(E[] array, int start, int end, Comparator<E> cmp) {
-        int cnt = 0;
-        for (int i = start; i < end - cnt; i++) {
-            for (int j = i + 1; j < end - cnt; j++) {
-                if (cmp.compare(array[i], array[j]) > 0) {
-                    CollectionUtil.swap(array, i, j);
+        for (int i = start; i < end; i++) {
+            // array[start..i) is sorted
+            for (int j = end - 1; j > i; j--) {
+                if (less(array[j], array[j - 1], cmp)) {
+                    exch(array, j, j - 1);
                 }
             }
+            // array[start..i] is sorted
+            assert isSorted(array, start, i, cmp);
         }
+        assert isSorted(array, start, end, cmp);
     }
 
     public static void main(String[] args) {

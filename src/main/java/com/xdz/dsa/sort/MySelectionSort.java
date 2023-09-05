@@ -47,8 +47,8 @@ public class MySelectionSort<E extends Comparable<E>> extends MyAbstractArraySor
         for (int i = start; i < end; i++) {
             // now sorted-part is array[start, i)
             int k = i;
-            for (int j = i; j < end; j++) {
-                if (cmp.compare(array[k], array[j]) > 0) {
+            for (int j = i + 1; j < end; j++) {
+                if (less(array[j], array[k], cmp)) {
                     k = j;
                 }
             }
