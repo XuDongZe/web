@@ -8,4 +8,6 @@ package com.xdz;
  */
 public interface Constants {
     String GPT_ID = "WJ";
+
+    String absoluteResourcePath = "D:\\github\\web\\src\\main\\resources\\";
 }
