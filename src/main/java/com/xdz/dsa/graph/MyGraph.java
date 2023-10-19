@@ -57,7 +57,8 @@ public class MyGraph implements IMyGraph {
      * ...
      */
     @SneakyThrows
-    public static MyGraph create(Scanner scanner) {
+    public static MyGraph create(InputStream is) {
+        Scanner scanner = new Scanner(is);
         int V = scanner.nextInt();
         int E = scanner.nextInt();
         MyGraph graph = create(V);
@@ -111,9 +112,7 @@ public class MyGraph implements IMyGraph {
 
     public static void main(String[] args) throws FileNotFoundException {
         String filename = Constants.absoluteResourcePath + "\\algo\\" + args[0];
-        FileInputStream fis = new FileInputStream(new File(filename));
-        Scanner scanner = new Scanner(fis);
-        MyGraph graph = MyGraph.create(scanner);
+        MyGraph graph = MyGraph.create(new FileInputStream(filename));
         System.out.println(graph);
     }
 }

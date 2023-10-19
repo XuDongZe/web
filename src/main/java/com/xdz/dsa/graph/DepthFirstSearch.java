@@ -45,10 +45,7 @@ public class DepthFirstSearch {
 
     public static void main(String[] args) throws FileNotFoundException {
         String filename = Constants.absoluteResourcePath + "\\algo\\" + args[0];
-        FileInputStream fis = new FileInputStream(new File(filename));
-        Scanner scanner = new Scanner(fis);
-        MyGraph graph = MyGraph.create(scanner);
-        int s = Integer.parseInt(args[1]);
+        MyGraph graph = MyGraph.create(new FileInputStream(filename));
 
         // max-connected set
         boolean[] marked = new boolean[graph.V()];
