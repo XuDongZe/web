@@ -1,6 +1,6 @@
 package com.xdz.dsa.stack;
 
-public interface IMyStack<E> {
+public interface IMyStack<E> extends Iterable<E> {
     /**
      * push one element to stack top
      */

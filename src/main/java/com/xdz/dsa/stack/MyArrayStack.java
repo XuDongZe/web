@@ -1,8 +1,10 @@
 package com.xdz.dsa.stack;
 
 import com.xdz.dsa.exception.MyArrayEmptyException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * Description: 数组栈<br/>
@@ -39,13 +41,23 @@ public class MyArrayStack<E> implements IMyStack<E> {
         size = 0;
     }
 
+    public MyArrayStack(MyArrayStack<E> other) {
+        if (other == null) {
+            throw new RuntimeException("copy stack error. other is null");
+        }
+        // 复制到stack中
+        data = Arrays.copyOf(other.data, other.data.length);
+        capacity = other.capacity;
+        size = other.size;
+    }
+
     @Override
     public void push(E e) {
         if (size >= capacity) {
             growth(size * 2);
         }
         data[size] = e;
-        size ++;
+        size++;
     }
 
     @Override
@@ -56,7 +68,7 @@ public class MyArrayStack<E> implements IMyStack<E> {
         Object o = data[size - 1];
         // remove the last one
         data[size - 1] = null; // help gc
-        size --;
+        size--;
         return (E) o;
     }
 
@@ -93,7 +105,31 @@ public class MyArrayStack<E> implements IMyStack<E> {
         return Arrays.toString(data);
     }
 
-    public static void main(String[] args){
+    @NotNull
+    @Override
+    public Iterator<E> iterator() {
+        return new MyArrayStackIterator();
+    }
+
+    private final class MyArrayStackIterator implements Iterator<E> {
+        private MyArrayStack<E> bak;
+
+        public MyArrayStackIterator() {
+            bak = new MyArrayStack<E>(MyArrayStack.this);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return !bak.isEmpty();
+        }
+
+        @Override
+        public E next() {
+            return bak.pop();
+        }
+    }
+
+    public static void main(String[] args) {
         MyArrayStack<Integer> stack = new MyArrayStack<>();
         stack.push(1);
         System.out.println(stack);
@@ -101,15 +137,22 @@ public class MyArrayStack<E> implements IMyStack<E> {
         System.out.println(stack);
         stack.push(3);
         System.out.println(stack);
+
+        stack.forEach(System.out::print);
+        System.out.println();
+
         // now stack is [1,2,3] and top is 3
         assert stack.top() == 3;
-        assert stack.pop() == 3; assert stack.size() == 2;
+        assert stack.pop() == 3;
+        assert stack.size() == 2;
         System.out.println(stack);
 
-        assert stack.pop() == 2; assert stack.size() == 1;
+        assert stack.pop() == 2;
+        assert stack.size() == 1;
         System.out.println(stack);
 
-        assert stack.pop() == 1; assert stack.size() == 0;
+        assert stack.pop() == 1;
+        assert stack.size() == 0;
         System.out.println(stack);
 
         assert stack.isEmpty();
