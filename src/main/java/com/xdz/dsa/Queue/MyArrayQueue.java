@@ -2,6 +2,10 @@ package com.xdz.dsa.Queue;
 
 import com.xdz.dsa.exception.MyArrayEmptyException;
 import com.xdz.dsa.exception.MyArrayFullException;
+import org.bouncycastle.util.Iterable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
 
 /**
  * Description: 数组实现的队列<br/>
@@ -46,7 +50,7 @@ public class MyArrayQueue<E> implements IMyQueue<E> {
         }
         E e = (E) data[head];
         data[head] = null; // help gcs
-        head ++;
+        head++;
         return e;
     }
 
@@ -65,7 +69,41 @@ public class MyArrayQueue<E> implements IMyQueue<E> {
         return size() >= capacity;
     }
 
+    @Override
+    public String toString() {
+        return __toString();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Integer> iterator() {
+        return new MyArrayQueueIterator<>();
+    }
+
+    private class MyArrayQueueIterator<E> implements Iterator<E> {
+        private int h;
+        private int t;
+
+        public MyArrayQueueIterator() {
+            this.h = head;
+            this.t = tail;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return t > h;
+        }
+
+        @Override
+        public E next() {
+            return (E) data[h++];
+        }
+    }
+
     public static void main(String[] args) {
-        IMyQueue.test(new MyArrayQueue<>(3));
+        MyArrayQueue<Integer> queue = new MyArrayQueue<>(3);
+        IMyQueue.test(queue);
+
+        System.out.println(queue);
     }
 }
