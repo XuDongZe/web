@@ -30,14 +30,19 @@ public interface IMyGraph {
     Iterable<Integer> adj(int v);
 
     /**
-     * the degree of v
-     * un-ordered graph, degree(v) is the num of edge which link with vertex v.
+     * adj string description of each vertex
      */
-    default int degree(int v) {
-        int degree = 0;
-        for (Integer w : adj(v)) {
-            degree ++;
+    default String __toString() {
+        int V = V();
+        String s = V + " vertexes, " + E() + " edges\n";
+        for (int v = 0; v < V; v++) {
+            // the adj(v) description
+            s += v + ": ";
+            for (Integer w : adj(v)) {
+                s += w + " ";
+            }
+            s += "\n";
         }
-        return degree;
+        return s;
     }
 }

@@ -93,21 +93,20 @@ public class MyGraph implements IMyGraph {
     }
 
     /**
-     * adj string description of each vertex
+     * the degree of v
+     * un-ordered graph, degree(v) is the num of edge which link with vertex v.
      */
+    public int degree(int v) {
+        int degree = 0;
+        for (Integer w : adj(v)) {
+            degree ++;
+        }
+        return degree;
+    }
+
     @Override
     public String toString() {
-        int V = V();
-        String s = V + " vertexes, " + E() + " edges\n";
-        for (int v = 0; v < V; v++) {
-            // the adj(v) description
-            s += v + ": ";
-            for (Integer w : adj(v)) {
-                s += w + " ";
-            }
-            s += "\n";
-        }
-        return s;
+        return __toString();
     }
 
     public static void main(String[] args) throws FileNotFoundException {
