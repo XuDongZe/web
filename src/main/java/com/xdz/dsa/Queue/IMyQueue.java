@@ -2,7 +2,7 @@ package com.xdz.dsa.Queue;
 
 import java.util.Iterator;
 
-public interface IMyQueue<E> extends Iterable<Integer> {
+public interface IMyQueue<E> extends Iterable<E> {
     /**
      * push one element to queue, which means add the element to the queue's tail
      * then the tail step one.
@@ -34,7 +34,7 @@ public interface IMyQueue<E> extends Iterable<Integer> {
 
     default String __toString() {
         String res = "[";
-        Iterator<Integer> it = iterator();
+        Iterator<E> it = iterator();
         while (it.hasNext()) {
             res += (it.next() + ",");
         }

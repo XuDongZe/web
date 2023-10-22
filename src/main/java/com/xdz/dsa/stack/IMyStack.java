@@ -1,5 +1,7 @@
 package com.xdz.dsa.stack;
 
+import java.util.Iterator;
+
 public interface IMyStack<E> extends Iterable<E> {
     /**
      * push one element to stack top
@@ -27,4 +29,18 @@ public interface IMyStack<E> extends Iterable<E> {
      * stack init is empty
      */
     boolean isEmpty();
+
+
+    default String __toString() {
+        String res = "[";
+        Iterator<E> it = iterator();
+        while (it.hasNext()) {
+            res += (it.next() + ",");
+        }
+        if (res.charAt(res.length() - 1) == ',') {
+            res = res.substring(0, res.length() - 1);
+        }
+        res += "]";
+        return res;
+    }
 }

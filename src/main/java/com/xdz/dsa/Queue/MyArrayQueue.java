@@ -76,7 +76,7 @@ public class MyArrayQueue<E> implements IMyQueue<E> {
 
     @NotNull
     @Override
-    public Iterator<Integer> iterator() {
+    public Iterator<E> iterator() {
         return new MyArrayQueueIterator<>();
     }
 

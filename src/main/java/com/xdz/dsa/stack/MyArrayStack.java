@@ -102,7 +102,7 @@ public class MyArrayStack<E> implements IMyStack<E> {
 
     @Override
     public String toString() {
-        return Arrays.toString(data);
+        return __toString();
     }
 
     @NotNull
