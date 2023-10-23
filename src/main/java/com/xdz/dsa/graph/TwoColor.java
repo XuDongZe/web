@@ -10,7 +10,7 @@ public class TwoColor {
     private boolean[] color;
     private boolean canBeTwoColor;
 
-    public TwoColor(IMyGraph graph) {
+    public TwoColor(MyGraph graph) {
         marked = new boolean[graph.V()];
         color = new boolean[graph.V()];
         canBeTwoColor = true;
@@ -25,7 +25,7 @@ public class TwoColor {
     /**
      * mock paint color from v by dfs order, and judge two-color or not in cc path.
      */
-    private void dfs(IMyGraph graph, int v) {
+    private void dfs(MyGraph graph, int v) {
         if (!canBeTwoColor) {
             return;
         }
@@ -54,7 +54,7 @@ public class TwoColor {
 
     public static void main(String[] args) throws FileNotFoundException {
         String filename = Constants.absoluteResourcePath + "algo\\" + args[0];
-        IMyGraph graph = MyGraph.create(new FileInputStream(filename));
+        MyGraph graph = MyGraph.create(new FileInputStream(filename));
 
         TwoColor twoColor = new TwoColor(graph);
         System.out.println(twoColor.canBipartite());

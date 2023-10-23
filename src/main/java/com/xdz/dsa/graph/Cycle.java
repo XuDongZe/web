@@ -13,7 +13,7 @@ public class Cycle {
     private boolean[] marked;
     private boolean hasCycle;
 
-    public Cycle(IMyGraph graph) {
+    public Cycle(MyGraph graph) {
         marked = new boolean[graph.V()];
         for (int s = 0; s < graph.V() && !hasCycle; s++) {
             if (!marked[s]) {
@@ -51,7 +51,7 @@ public class Cycle {
 
     public static void main(String[] args) throws FileNotFoundException {
         String filename = Constants.absoluteResourcePath + "algo\\" + args[0];
-        IMyGraph graph = MyGraph.create(new FileInputStream(filename));
+        MyGraph graph = MyGraph.create(new FileInputStream(filename));
 
         Cycle cycle = new Cycle(graph);
         System.out.println(cycle.hasCycle());

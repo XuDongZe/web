@@ -17,7 +17,7 @@ public class CC {
     private int[] id; // id[v] = i: the id of vertex v is i.
     private int count; // the num of max-sub-connected. can be used as id-allocate
 
-    public CC(IMyGraph graph) {
+    public CC(MyGraph graph) {
         int V = graph.V();
         marked = new boolean[V];
         id = new int[V];
@@ -68,7 +68,7 @@ public class CC {
 
     public static void main(String[] args) throws FileNotFoundException {
         String filename = Constants.absoluteResourcePath + "algo\\" + args[0];
-        IMyGraph graph = MyGraph.create(new FileInputStream(filename));
+        MyGraph graph = MyGraph.create(new FileInputStream(filename));
         CC cc = new CC(graph);
 
         int M = cc.count();
