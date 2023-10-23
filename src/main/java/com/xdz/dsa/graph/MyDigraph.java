@@ -58,7 +58,7 @@ public class MyDigraph implements IMyGraph {
      * use this we can find all edges endpoints which end with target v.
      */
     public static MyDigraph reverse(MyDigraph graph) {
-        MyDigraph reverse = new MyDigraph();
+        MyDigraph reverse = MyDigraph.create(graph.V());
         for (int v = 0; v < graph.V(); v++) {
             for (Integer w : graph.adj(v)) {
                 // v->w turn to w->v, then add to reverse
