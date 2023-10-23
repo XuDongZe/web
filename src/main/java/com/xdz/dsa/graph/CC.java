@@ -35,8 +35,8 @@ public class CC {
      * start with vertex v, allocate all connected-vertex id as count.
      */
     private void dfs(IMyGraph graph, int v) {
-        id[v] = count;
         marked[v] = true;
+        id[v] = count;
 
         for (Integer w : graph.adj(v)) {
             if (!marked[w]) {
@@ -83,7 +83,7 @@ public class CC {
         }
 
         for (int i = 0; i < M; i++) {
-            System.out.println(i + ": ");
+            System.out.printf("components[%s]: ", i);
             for (Integer v : components[i]) {
                 System.out.printf(v + " ");
             }
