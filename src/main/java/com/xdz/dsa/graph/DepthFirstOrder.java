@@ -61,7 +61,7 @@ public class DepthFirstOrder {
 
     public static void main(String[] args) throws FileNotFoundException {
         String filename = Constants.absoluteResourcePath + "algo\\" + args[0];
-        IMyGraph graph = MyGraph.create(new FileInputStream(filename));
+        IMyGraph graph = MyDigraph.create(new FileInputStream(filename));
 
         DepthFirstOrder order = new DepthFirstOrder(graph);
         System.out.println(order.pre());
