@@ -43,7 +43,10 @@ public class DiffNums {
     // [a, b] 区间每个数 +k
     public void increment(int a, int b, int k) {
         diff[a] += k;
-        diff[Math.min(diff.length - 1, b + 1)] -= k;
+        if (b + 1 < diff.length) {
+            diff[b + 1] -= k;
+        }
+        // 当b + 1 >= diff.length时 说明b之后没有区间了 不需要处理
     }
 
     // 返回原数组
