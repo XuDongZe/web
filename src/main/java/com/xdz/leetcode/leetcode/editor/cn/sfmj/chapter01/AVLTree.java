@@ -82,7 +82,7 @@ public class AVLTree {
             return null;
         }
         if (val == node.val) {
-            node.cnt --;
+            node.cnt--;
             if (node.cnt > 0) {
                 return node;
             }
@@ -193,8 +193,8 @@ public class AVLTree {
         node.right = __balanceLL(node.right);
         return __balanceRR(node);
     }
-    
-    
+
+
     private int __height(TreeNode node) {
         return node == null ? 0 : node.height;
     }
@@ -226,18 +226,29 @@ public class AVLTree {
     }
 
     public static void main(String[] args) {
-        int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+//        int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13};
+//        AVLTree obj = new AVLTree();
+//        for (int num : nums) {
+//            obj.insert(num);
+//        }
+//        TreeNode node = obj.search(1);
+//        System.out.println(node.val);
+//        obj.delete(1);
+//        System.out.println(obj);
+//        obj.delete(7);
+//        System.out.println(obj);
+//        obj.delete(8);
+//        System.out.println(obj);
+
+        int[] nums = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
         AVLTree obj = new AVLTree();
         for (int num : nums) {
             obj.insert(num);
         }
-        TreeNode node = obj.search(1);
-        System.out.println(node.val);
-        obj.delete(1);
-        System.out.println(obj);
-        obj.delete(7);
-        System.out.println(obj);
-        obj.delete(8);
+        int[] deletes = {3, 7, 8, 10, 11, 13, 17, 9};
+        for (int n : deletes) {
+            obj.delete(n);
+        }
         System.out.println(obj);
     }
 }
