@@ -1,12 +1,8 @@
 package com.xdz.leetcode.leetcode.editor.cn.sfmj.chapter01;
 
-import com.google.common.collect.Lists;
-import lombok.val;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.ToIntFunction;
 
 /**
  * 二叉搜索树
@@ -49,10 +45,7 @@ public class BinarySearchTree {
     }
 
     public void insert(int val) {
-        TreeNode t = __insert(root, val);
-        if (root == null) {
-            root = t;
-        }
+        root = __insert(root, val);
     }
 
     /**
